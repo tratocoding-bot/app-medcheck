@@ -4,22 +4,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { getAllItems } from "@/data/checklistData";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { User, Save, Download } from "lucide-react";
+import { User, Save, Download, Trash2, KeyRound } from "lucide-react";
 
 export default function PerfilPage() {
   const { user, profile, refreshProfile } = useAuth();
   const { checkedCount, progress } = useChecklistProgress();
   const totalItems = getAllItems().length;
+  const queryClient = useQueryClient();
 
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
   const [perfil, setPerfil] = useState(profile?.perfil ?? "concluinte");
   const [crm, setCrm] = useState(profile?.crm ?? "");
   const [saving, setSaving] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const handleSave = async () => {
     if (!user) return;
@@ -54,6 +68,39 @@ export default function PerfilPage() {
     URL.revokeObjectURL(url);
     toast.success("Progresso exportado!");
   };
+
+  const handleResetChecklist = async () => {
+    if (!user) return;
+    setResetting(true);
+    const { error } = await supabase
+      .from("checklist_progress")
+      .delete()
+      .eq("user_id", user.id);
+    setResetting(false);
+    if (error) {
+      toast.error("Erro ao resetar: " + error.message);
+    } else {
+      toast.success("Checklist resetado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["checklist-progress", user.id] });
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!user?.email) return;
+    const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) toast.error(error.message);
+    else toast.success("E-mail de redefinição de senha enviado!");
+  };
+
+  const completedSections = (() => {
+    const { checklistSections } = require("@/data/checklistData");
+    return checklistSections.filter((section: any) => {
+      const items = section.subsections.flatMap((sub: any) => sub.items);
+      return items.length > 0 && items.every((item: any) => progress.find((p) => p.item_id === item.id)?.checked);
+    }).length;
+  })();
 
   return (
     <div className="space-y-6 animate-fade-in max-w-2xl">
@@ -112,19 +159,67 @@ export default function PerfilPage() {
 
       <Card className="border-0 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-base">Progresso Geral</CardTitle>
+          <CardTitle className="text-base">Estatísticas</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            {checkedCount} de {totalItems} itens concluídos ({totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0}%)
-          </p>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-3 rounded-lg bg-secondary/30 text-center">
+              <p className="text-2xl font-bold text-primary">{checkedCount}</p>
+              <p className="text-xs text-muted-foreground">Itens concluídos</p>
+            </div>
+            <div className="p-3 rounded-lg bg-secondary/30 text-center">
+              <p className="text-2xl font-bold text-success">{completedSections}</p>
+              <p className="text-xs text-muted-foreground">Seções 100%</p>
+            </div>
+          </div>
           <p className="text-xs text-muted-foreground">
             Conta criada em: {profile?.created_at ? new Date(profile.created_at).toLocaleDateString("pt-BR") : "—"}
           </p>
-          <Button variant="outline" onClick={handleExport}>
-            <Download className="mr-2 h-4 w-4" />
-            Exportar progresso (JSON)
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={handleExport}>
+              <Download className="mr-2 h-4 w-4" />
+              Exportar progresso
+            </Button>
+            <Button variant="outline" onClick={handleChangePassword}>
+              <KeyRound className="mr-2 h-4 w-4" />
+              Alterar senha
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Danger zone */}
+      <Card className="border-0 shadow-sm border-destructive/20">
+        <CardHeader>
+          <CardTitle className="text-base text-destructive">Zona de Perigo</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Esta ação apagará todo o seu progresso no checklist. Não pode ser desfeita.
+          </p>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" disabled={resetting}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Resetar meu checklist
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Isso apagará permanentemente todo o seu progresso ({checkedCount} itens marcados).
+                  Esta ação não pode ser desfeita.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleResetChecklist} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Sim, resetar tudo
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </CardContent>
       </Card>
     </div>
