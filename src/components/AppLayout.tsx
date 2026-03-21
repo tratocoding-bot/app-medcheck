@@ -65,7 +65,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {profile?.perfil && (
               <Badge variant="outline" className="hidden md:inline-flex text-xs">
                 {perfilLabel(profile.perfil)}
@@ -74,6 +74,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <span className="text-sm font-medium hidden md:inline truncate max-w-[120px]">
               {profile?.full_name ?? "Usuário"}
             </span>
+            <Button variant="ghost" size="icon" onClick={() => setDarkMode(!darkMode)} title={darkMode ? "Modo claro" : "Modo escuro"}>
+              {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
             <Button variant="ghost" size="icon" onClick={() => signOut()} title="Sair">
               <LogOut className="h-4 w-4" />
             </Button>
