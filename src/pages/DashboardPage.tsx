@@ -6,7 +6,7 @@ import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { useEnamedDates } from "@/hooks/useEnamedDates";
 import { useAuth } from "@/contexts/AuthContext";
 import { checklistSections, getAllItems } from "@/data/checklistData";
-import { Calendar, BookOpen, FileText, MapPin, TrendingUp, Shield, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Calendar, BookOpen, FileText, MapPin, TrendingUp, Shield, Clock, AlertTriangle, CheckCircle2, ClipboardList } from "lucide-react";
 
 const sectionIcons: Record<string, React.ElementType> = {
   Calendar, FileText, BookOpen, MapPin, TrendingUp, Shield,
