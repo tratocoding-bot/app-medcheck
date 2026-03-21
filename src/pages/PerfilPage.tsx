@@ -18,7 +18,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
-import { getAllItems } from "@/data/checklistData";
+import { getAllItems, checklistSections } from "@/data/checklistData";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { User, Save, Download, Trash2, KeyRound } from "lucide-react";
