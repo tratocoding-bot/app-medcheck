@@ -121,7 +121,7 @@ export default function ChecklistPage() {
             origin: { y: 0.6 },
             colors: ["#c8413b", "#2b4cad", "#2a7a4b", "#c47d14"],
           });
-      }
+        }
     }
   };
 
