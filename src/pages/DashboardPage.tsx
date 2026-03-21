@@ -131,8 +131,9 @@ export default function DashboardPage() {
         <h2 className="text-lg font-semibold mb-3">Progresso por Seção</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {checklistSections.map((section) => {
-            const sectionChecked = section.items.filter((item) => isChecked(item.id)).length;
-            const sectionTotal = section.items.length;
+            const sectionItems = section.subsections.flatMap((sub) => sub.items);
+            const sectionChecked = sectionItems.filter((item) => isChecked(item.id)).length;
+            const sectionTotal = sectionItems.length;
             const sectionPct = sectionTotal > 0 ? Math.round((sectionChecked / sectionTotal) * 100) : 0;
             const Icon = sectionIcons[section.icon] || CheckCircle2;
 
