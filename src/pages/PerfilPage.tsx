@@ -94,13 +94,10 @@ export default function PerfilPage() {
     else toast.success("E-mail de redefinição de senha enviado!");
   };
 
-  const completedSections = (() => {
-    const { checklistSections } = require("@/data/checklistData");
-    return checklistSections.filter((section: any) => {
-      const items = section.subsections.flatMap((sub: any) => sub.items);
-      return items.length > 0 && items.every((item: any) => progress.find((p) => p.item_id === item.id)?.checked);
-    }).length;
-  })();
+  const completedSections = checklistSections.filter((section) => {
+    const items = section.subsections.flatMap((sub) => sub.items);
+    return items.length > 0 && items.every((item) => progress.find((p) => p.item_id === item.id)?.checked);
+  }).length;
 
   return (
     <div className="space-y-6 animate-fade-in max-w-2xl">
