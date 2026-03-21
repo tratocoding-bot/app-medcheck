@@ -1,0 +1,2 @@
+ALTER TABLE enamed_dates DROP CONSTRAINT enamed_dates_status_check;
+ALTER TABLE enamed_dates ADD CONSTRAINT enamed_dates_status_check CHECK (status = ANY (ARRAY['confirmed', 'pending', 'done', 'waiting']));
