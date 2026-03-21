@@ -1,0 +1,1 @@
+CREATE POLICY "Users can delete their own progress" ON public.checklist_progress FOR DELETE USING (auth.uid() = user_id);
