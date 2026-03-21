@@ -110,6 +110,19 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         {/* Main content */}
         <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6 overflow-auto">
           {children}
+
+          {/* Footer */}
+          <footer className="mt-12 pt-6 border-t border-border/50 text-center text-xs text-muted-foreground space-y-1 pb-4">
+            <p>⚕ ENAMED 2026 — INEP / MEC / EBSERH</p>
+            <p>Informações baseadas no Edital nº 81 (25/06/2025) e ofício SEI/INEP (dez/2025)</p>
+            <p>
+              Site oficial:{" "}
+              <a href="https://enamed.inep.gov.br" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">enamed.inep.gov.br</a>
+              {" | "}
+              <a href="https://enare.ebserh.gov.br" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">enare.ebserh.gov.br</a>
+            </p>
+            <p className="text-[10px]">*Datas propostas sem confirmação oficial do INEP</p>
+          </footer>
         </main>
       </div>
 

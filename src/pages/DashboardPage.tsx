@@ -6,10 +6,10 @@ import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { useEnamedDates } from "@/hooks/useEnamedDates";
 import { useAuth } from "@/contexts/AuthContext";
 import { checklistSections, getAllItems } from "@/data/checklistData";
-import { Calendar, BookOpen, FileText, MapPin, TrendingUp, Shield, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Calendar, BookOpen, FileText, MapPin, TrendingUp, Shield, Clock, AlertTriangle, CheckCircle2, ClipboardList } from "lucide-react";
 
 const sectionIcons: Record<string, React.ElementType> = {
-  Calendar, FileText, BookOpen, MapPin, TrendingUp, Shield,
+  Calendar, FileText, BookOpen, MapPin, TrendingUp, Shield, ClipboardList,
 };
 
 function getProgressColor(pct: number) {
@@ -131,8 +131,9 @@ export default function DashboardPage() {
         <h2 className="text-lg font-semibold mb-3">Progresso por Seção</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {checklistSections.map((section) => {
-            const sectionChecked = section.items.filter((item) => isChecked(item.id)).length;
-            const sectionTotal = section.items.length;
+            const sectionItems = section.subsections.flatMap((sub) => sub.items);
+            const sectionChecked = sectionItems.filter((item) => isChecked(item.id)).length;
+            const sectionTotal = sectionItems.length;
             const sectionPct = sectionTotal > 0 ? Math.round((sectionChecked / sectionTotal) * 100) : 0;
             const Icon = sectionIcons[section.icon] || CheckCircle2;
 

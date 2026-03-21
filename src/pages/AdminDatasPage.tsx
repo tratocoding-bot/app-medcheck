@@ -91,8 +91,9 @@ export default function AdminDatasPage() {
               <Select value={newEvent.status} onValueChange={(v) => setNewEvent({ ...newEvent, status: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pendente</SelectItem>
+                  <SelectItem value="pending">Previsto</SelectItem>
                   <SelectItem value="confirmed">Confirmado</SelectItem>
+                  <SelectItem value="waiting">Aguardando</SelectItem>
                   <SelectItem value="done">Concluído</SelectItem>
                 </SelectContent>
               </Select>
@@ -159,8 +160,9 @@ function EditRow({ date, onSave, onCancel }: { date: any; onSave: (u: Record<str
       <Select value={status} onValueChange={setStatus}>
         <SelectTrigger><SelectValue /></SelectTrigger>
         <SelectContent>
-          <SelectItem value="pending">Pendente</SelectItem>
+          <SelectItem value="pending">Previsto</SelectItem>
           <SelectItem value="confirmed">Confirmado</SelectItem>
+          <SelectItem value="waiting">Aguardando</SelectItem>
           <SelectItem value="done">Concluído</SelectItem>
         </SelectContent>
       </Select>

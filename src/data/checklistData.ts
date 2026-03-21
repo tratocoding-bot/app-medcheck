@@ -4,6 +4,14 @@ export interface ChecklistItem {
   profiles?: string[]; // if empty/undefined, applies to all
   urgent?: boolean;
   emoji?: string;
+  tags?: string[]; // 'obrig' | 'enare' | 'novo2026' | 'alerta' | 'aceita'
+  detail?: string; // extra info shown below item
+}
+
+export interface ChecklistSubsection {
+  title: string;
+  alert?: { type: "blue" | "yellow" | "green"; text: string };
+  items: ChecklistItem[];
 }
 
 export interface ChecklistSection {
@@ -12,7 +20,10 @@ export interface ChecklistSection {
   badge: string;
   badgeColor: string;
   icon: string;
-  items: ChecklistItem[];
+  alert?: { type: "blue" | "yellow" | "green"; text: string };
+  subsections: ChecklistSubsection[];
+  hasNotes?: boolean;
+  notesPlaceholder?: string;
 }
 
 export const checklistSections: ChecklistSection[] = [
@@ -22,132 +33,231 @@ export const checklistSections: ChecklistSection[] = [
     badge: "URGENTE",
     badgeColor: "destructive",
     icon: "Calendar",
-    items: [
-      { id: "sec1_1", text: "Publicação do Edital e início das inscrições (~Jul 2026)", urgent: true, emoji: "⚠" },
-      { id: "sec1_2", text: "Prazo final de inscrição (~Ago 2026)", urgent: true, emoji: "⚠" },
-      { id: "sec1_3", text: "Pagamento da taxa: R$330 (só p/ médicos e 4º ano)", emoji: "💲" },
-      { id: "sec1_4", text: "Pedido de isenção: verificar critérios CadÚnico/renda" },
-      { id: "sec1_5", text: "Período de atendimento especial (lactantes, PcD, nome social)" },
-      { id: "sec1_6", text: "Cartão de Confirmação: local e horário de prova (~Set 2026)" },
-      { id: "sec1_7", text: "DIA DA PROVA: 13 de setembro de 2026", urgent: true, emoji: "🔴" },
-      { id: "sec1_8", text: "Divulgação dos resultados individuais (~Nov 2026)" },
-      { id: "sec1_9", text: "Processo de recursos" },
+    alert: {
+      type: "blue",
+      text: 'Datas marcadas com * são propostas no ofício SEI/INEP de dezembro/2025 e ainda aguardam confirmação oficial pelo INEP. Acompanhe: enamed.inep.gov.br',
+    },
+    subsections: [
+      {
+        title: "Cronograma Oficial ENAMED 2026",
+        items: [
+          { id: "sec1_1", text: "Salvar o site oficial nos favoritos: enamed.inep.gov.br", tags: ["obrig"] },
+          { id: "sec1_2", text: "Configurar lembrete no celular para ~Jun 2026 (publicação do edital)" },
+          { id: "sec1_3", text: "Configurar lembrete para ~Jul 2026 (abertura das inscrições)" },
+          { id: "sec1_4", text: "Confirmar com a coordenação o calendário da instituição", profiles: ["concluinte"] },
+          { id: "sec1_5", text: "Verificar isenção de taxa do ENARE antes do período de inscrições", tags: ["alerta"] },
+        ],
+      },
     ],
+    hasNotes: true,
   },
   {
     id: "sec2",
-    title: "Inscrição e Documentação",
-    badge: "PRIORITÁRIO",
+    title: "Documentação: Carteiras Médicas e Documentos",
+    badge: "OBRIGATÓRIO",
     badgeColor: "warning",
     icon: "FileText",
-    items: [
-      // Concluintes
-      { id: "sec2_c1", text: "Confirmar que sua IES fez o cadastro no sistema E-MEC junto ao INEP", profiles: ["concluinte"] },
-      { id: "sec2_c2", text: "Verificar se seu nome consta na lista de habilitados pelo INEP", profiles: ["concluinte"] },
-      { id: "sec2_c3", text: "Obter declaração da IES sobre conclusão/previsão de conclusão", profiles: ["concluinte"] },
-      { id: "sec2_c4", text: "Conferir dados pessoais (CPF e nome correto no sistema)", profiles: ["concluinte"] },
-      { id: "sec2_c5", text: "Ler atentamente o Edital completo no site do INEP", profiles: ["concluinte"] },
-      // Médicos
-      { id: "sec2_m1", text: "Acessar a Página do Participante (gov.br) e criar conta", profiles: ["medico"] },
-      { id: "sec2_m2", text: "Preencher questionário do estudante (obrigatório)", profiles: ["medico"] },
-      { id: "sec2_m3", text: "Pagar a taxa de inscrição R$330 via GRU", profiles: ["medico"] },
-      { id: "sec2_m4", text: "Reunir documentos: diploma de graduação em Medicina ou certidão de colação", profiles: ["medico"] },
-      { id: "sec2_m5", text: "CRM ativo e regular", profiles: ["medico"] },
-      { id: "sec2_m6", text: "Verificar se é elegível a isenção de taxa (CadÚnico/renda)", profiles: ["medico"] },
-      // 4º ano
-      { id: "sec2_a1", text: "Confirmar que sua IES fez o cadastro no sistema E-MEC junto ao INEP", profiles: ["4ano"] },
-      { id: "sec2_a2", text: "Verificar elegibilidade: matrícula ativa no 4º ano de medicina", profiles: ["4ano"] },
-      { id: "sec2_a3", text: "Entender que a nota obtida equivalerá a 20% da nota do ENARE", profiles: ["4ano"] },
-      { id: "sec2_a4", text: "Pagar a taxa de inscrição R$330", profiles: ["4ano"] },
-      { id: "sec2_a5", text: "Ler atentamente o Edital completo", profiles: ["4ano"] },
+    subsections: [
+      {
+        title: "Cadastro e Acesso Digital",
+        items: [
+          { id: "sec2_d1", text: "Cadastro ativo no Gov.br com nível Prata ou Ouro", tags: ["obrig"], detail: "Necessário para acessar o Sistema ENAMED. Acesse: gov.br" },
+          { id: "sec2_d2", text: "CPF válido e regularizado na Receita Federal", tags: ["obrig"] },
+          { id: "sec2_d3", text: "E-mail válido e telefone atualizados", tags: ["obrig"] },
+        ],
+      },
+      {
+        title: "Carteira / Registro Médico (CRM)",
+        items: [
+          { id: "sec2_crm1", text: "Carteira do CRM — Inscrição definitiva ou provisória no CRM", profiles: ["medico"], detail: "Aceita como documento de identificação no dia da prova" },
+          { id: "sec2_crm2", text: "Verificar validade e situação ativa do CRM no portal CFM", profiles: ["medico"], detail: "portalmedico.cfm.org.br" },
+          { id: "sec2_crm3", text: "Diploma de Medicina ou declaração de conclusão do curso", profiles: ["medico"], detail: "Médicos graduados no exterior: diploma revalidado (Revalida INEP)" },
+          { id: "sec2_crm4", text: "Declaração de matrícula no último ano (6º ano) de Medicina", profiles: ["concluinte"] },
+          { id: "sec2_crm5", text: "Confirmação de matrícula no 4º ano do curso de Medicina", profiles: ["4ano"], tags: ["novo2026"], detail: "A partir de 2026, o ENAMED também é obrigatório para o 4º ano. Nota vale 20% no ENARE." },
+        ],
+      },
+      {
+        title: "Documentos de Identificação — Dia da Prova",
+        alert: { type: "blue", text: "Leve documento original, com foto, emitido por órgão brasileiro. Documentos digitais são aceitos via aplicativo oficial do Gov.br." },
+        items: [
+          { id: "sec2_doc1", text: "RG — Cédula de Identidade (Secretarias de Segurança Pública)" },
+          { id: "sec2_doc2", text: "CIN — Carteira de Identidade Nacional (novo modelo)" },
+          { id: "sec2_doc3", text: "CNH — Carteira Nacional de Habilitação" },
+          { id: "sec2_doc4", text: "Passaporte brasileiro" },
+          { id: "sec2_doc5", text: "Carteira do CRM — identificação do Conselho Regional de Medicina", tags: ["aceita"] },
+          { id: "sec2_doc6", text: "RG ou CNH digital via aplicativo Gov.br" },
+        ],
+      },
+      {
+        title: "Materiais para o Dia da Prova",
+        items: [
+          { id: "sec2_mat1", text: "Caneta esferográfica de tinta preta, tubo transparente", tags: ["obrig"] },
+          { id: "sec2_mat2", text: "Cartão de confirmação de inscrição (local e horário da prova)" },
+          { id: "sec2_mat3", text: "⛔ Celulares, relógios inteligentes e fones de ouvido são proibidos", emoji: "⛔" },
+        ],
+      },
     ],
+    hasNotes: true,
   },
   {
     id: "sec3",
-    title: "Conteúdo da Prova",
-    badge: "ACADÊMICO",
+    title: "Inscrição no ENAMED e ENARE",
+    badge: "PASSO A PASSO",
     badgeColor: "accent",
-    icon: "BookOpen",
-    items: [
-      { id: "sec3_1", text: "Estudar: Clínica Médica (Grandes Áreas)" },
-      { id: "sec3_2", text: "Estudar: Cirurgia Geral e Especialidades Cirúrgicas" },
-      { id: "sec3_3", text: "Estudar: Pediatria / Saúde da Criança e do Adolescente" },
-      { id: "sec3_4", text: "Estudar: Ginecologia e Obstetrícia / Saúde da Mulher" },
-      { id: "sec3_5", text: "Estudar: Medicina de Família e Comunidade / Atenção Primária" },
-      { id: "sec3_6", text: "Estudar: Saúde Coletiva e Medicina Preventiva" },
-      { id: "sec3_7", text: "Estudar: Saúde Mental / Psiquiatria básica" },
-      { id: "sec3_8", text: "Estudar: Urgência e Emergência" },
-      { id: "sec3_9", text: "Estudar: Ética Médica e Bioética" },
-      { id: "sec3_10", text: "Estudar: Medicina Legal (noções)" },
-      { id: "sec3_11", text: "Estudar: Gestão em Saúde e SUS (políticas públicas)" },
-      { id: "sec3_12", text: "Entender o formato da prova: questões objetivas + discursivas + habilidades clínicas" },
-      { id: "sec3_13", text: "Resolver provas anteriores do ENADE de Medicina (2016, 2019, 2022)" },
-      { id: "sec3_14", text: "Simular provas completas em tempo real (5h de duração)" },
-      { id: "sec3_15", text: "Estudar Formação Geral (25% da prova): Ética, Sustentabilidade, Diversidade, Legislação" },
-      { id: "sec3_16", text: "Revisar Diretrizes Curriculares Nacionais (DCN) de Medicina (2014, atualizada)" },
+    icon: "ClipboardList",
+    subsections: [
+      {
+        title: "Concluintes 6º Ano — Via Instituição de Ensino",
+        alert: { type: "blue", text: "Concluintes são inscritos automaticamente pela instituição de ensino via Sistema Enade/Enamed. Mas precisam acessar o sistema para completar o cadastro." },
+        items: [
+          { id: "sec3_c1", text: "Confirmar com a coordenação que a IES realizou a inscrição no Sistema Enade", profiles: ["concluinte"] },
+          { id: "sec3_c2", text: "Acessar o Sistema ENAMED (enamed.inep.gov.br) no período de inscrições para completar o cadastro", profiles: ["concluinte"], tags: ["obrig"] },
+          { id: "sec3_c3", text: "Informar CPF, data de nascimento, e-mail e telefone de contato no Sistema ENAMED", profiles: ["concluinte"] },
+          { id: "sec3_c4", text: "Escolher município e UF de realização da prova", profiles: ["concluinte"] },
+          { id: "sec3_c5", text: "Preencher o Questionário do Estudante no sistema (obrigatório para colação de grau)", profiles: ["concluinte"] },
+          { id: "sec3_c6", text: "Caso queira participar do ENARE: optar pela utilização dos resultados no ENARE", profiles: ["concluinte"] },
+          { id: "sec3_c7", text: "Acessar a plataforma do ENARE (enare.ebserh.gov.br) e completar inscrição + taxa R$330", profiles: ["concluinte"], tags: ["enare"] },
+        ],
+      },
+      {
+        title: "Médicos Formados — Acesso Direto ao ENARE",
+        alert: { type: "blue", text: "Enamed é gratuito. A taxa de R$330 é somente para quem quer concorrer a vagas no ENARE." },
+        items: [
+          { id: "sec3_m1", text: "Acessar o Sistema ENAMED no período de inscrições (~Jul 2026)", profiles: ["medico"], tags: ["obrig"] },
+          { id: "sec3_m2", text: "Preencher dados: CPF, data de nascimento, e-mail, telefone, CRM", profiles: ["medico"] },
+          { id: "sec3_m3", text: "Escolher opção de utilização dos resultados no ENARE (se desejar)", profiles: ["medico"] },
+          { id: "sec3_m4", text: "Verificar elegibilidade para isenção da taxa (renda, dependentes)", profiles: ["medico"], detail: "Critérios: taxa > 30% da renda mensal (sem dependentes); > 20% (até 2 dependentes); > 10% (mais de 2 dependentes); renda familiar até 3 salários mínimos" },
+          { id: "sec3_m5", text: "Efetuar o pagamento da taxa do ENARE (R$330) até a data limite", profiles: ["medico"], tags: ["enare"] },
+          { id: "sec3_m6", text: "Confirmar inscrição no ENARE e escolher a especialidade/vagas de interesse", profiles: ["medico"] },
+        ],
+      },
+      {
+        title: "Estudantes do 4º Ano — Novidade 2026",
+        alert: { type: "yellow", text: "A partir de 2026, o ENAMED também é obrigatório para estudantes do 4º ano de Medicina. A nota valerá 20% da nota final no ENARE de forma permanente." },
+        items: [
+          { id: "sec3_a1", text: "Confirmar com a coordenação que a IES realizou a inscrição como estudante do 4º ano", profiles: ["4ano"], tags: ["novo2026"] },
+          { id: "sec3_a2", text: "Acessar o Sistema ENAMED e completar cadastro no período informado", profiles: ["4ano"], tags: ["novo2026"] },
+          { id: "sec3_a3", text: "Escolher município e UF de realização da prova", profiles: ["4ano"], tags: ["novo2026"] },
+        ],
+      },
     ],
+    hasNotes: true,
   },
   {
     id: "sec4",
-    title: "Logística do Dia da Prova",
-    badge: "OPERACIONAL",
-    badgeColor: "secondary",
-    icon: "MapPin",
-    items: [
-      { id: "sec4_1", text: "Conferir local de prova no Cartão de Confirmação" },
-      { id: "sec4_2", text: "Fazer trajeto de teste até o local de prova com antecedência" },
-      { id: "sec4_3", text: "Separar documento de identidade original com foto (obrigatório)" },
-      { id: "sec4_4", text: "Preparar kit de prova: caneta esferográfica preta, tubo transparente, lápis nº 2, borracha" },
-      { id: "sec4_5", text: "Verificar itens proibidos: celular, smartwatch, fones, bonés, etc." },
-      { id: "sec4_6", text: "Planejar alimentação leve e hidratação para o dia" },
-      { id: "sec4_7", text: "Chegar com pelo menos 1 hora de antecedência (portões fecham pontualmente)" },
-      { id: "sec4_8", text: "Ler as instruções do caderno de prova antes de começar" },
-      { id: "sec4_9", text: "Distribuir tempo: máx. 3 min por questão objetiva" },
-      { id: "sec4_10", text: "Preencher o cartão-resposta com calma e sem rasuras" },
-      { id: "sec4_11", text: "Guardar caderno de questões (só pode levar após 2h de prova)" },
+    title: "Conteúdo Programático e Estudo",
+    badge: "RESIDÊNCIA",
+    badgeColor: "accent",
+    icon: "BookOpen",
+    subsections: [
+      {
+        title: "Estrutura da Prova",
+        items: [
+          { id: "sec4_s1", text: "100 questões de múltipla escolha — 5 alternativas, 1 correta", detail: "Tempo: 5 horas (13h30–18h30). Raciocínio clínico + integração de conhecimentos." },
+          { id: "sec4_s2", text: "Conteúdo baseado nas Diretrizes Curriculares Nacionais (DCN) do curso de Medicina" },
+          { id: "sec4_s3", text: "Abordagem privilegia raciocínio clínico e tomada de decisão — não memorização pura" },
+          { id: "sec4_s4", text: "Nota do ENAMED utilizada pelo ENARE como nota bruta (total de acertos, sem TRI para classificação)", detail: "O INEP utiliza TRI apenas para o Conceito Enade institucional; para o ENARE, vale a nota bruta." },
+        ],
+      },
+      {
+        title: "Áreas Temáticas — Cartões de Estudo",
+        items: [
+          { id: "sec4_t1", text: "Clínica Médica", emoji: "🫀", detail: "Cardiologia, Pneumologia, Endocrinologia, Nefrologia, Gastroenterologia, Reumatologia, Infectologia, Neurologia" },
+          { id: "sec4_t2", text: "Cirurgia Geral", emoji: "🔪", detail: "Abdome agudo, trauma, pré e pós-operatório, hérnias, cirurgia vascular básica" },
+          { id: "sec4_t3", text: "Ginecologia e Obstetrícia", emoji: "🤰", detail: "Pré-natal, parto normal, complicações, anticoncepção, doenças ginecológicas" },
+          { id: "sec4_t4", text: "Pediatria", emoji: "👶", detail: "Desenvolvimento, imunização, doenças prevalentes, urgências pediátricas, neonatologia" },
+          { id: "sec4_t5", text: "Saúde Coletiva / MFC", emoji: "🏥", detail: "Atenção primária, SUS, epidemiologia, vigilância em saúde, medicina de família" },
+          { id: "sec4_t6", text: "Saúde Mental", emoji: "🧠", detail: "Transtornos do humor, psicoses, dependência química, psicofarmacologia básica" },
+          { id: "sec4_t7", text: "Urgência e Emergência", emoji: "🚨", detail: "ACLS/BLS, politrauma, choque, AVC, IAM, intoxicações" },
+          { id: "sec4_t8", text: "Ética Médica", emoji: "⚖️", detail: "Código de Ética Médica (CFM), relação médico-paciente, sigilo, documentos médicos" },
+        ],
+      },
+      {
+        title: "Questões da Edição 2025 (referência)",
+        alert: { type: "yellow", text: "Na edição de 2025 (prova em 19/10/2025), 3 questões foram anuladas após o gabarito preliminar por serem idênticas a questões do Revalida aplicado no mesmo dia. Fique atento a possíveis recursos na edição 2026." },
+        items: [
+          { id: "sec4_q1", text: "Revisar gabarito e questões da edição ENAMED 2025 como material de estudo" },
+          { id: "sec4_q2", text: "Resolver simulados com foco em raciocínio clínico integrado (não apenas conteúdo isolado)" },
+          { id: "sec4_q3", text: "Organizar cronograma de estudos por área temática" },
+        ],
+      },
     ],
+    hasNotes: true,
+    notesPlaceholder: "Cronograma de estudos, materiais, anotações...",
   },
   {
     id: "sec5",
-    title: "Pós-Prova e ENARE",
-    badge: "ESTRATÉGICO",
-    badgeColor: "accent",
-    icon: "TrendingUp",
-    items: [
-      { id: "sec5_1", text: "Aguardar gabarito preliminar e conferir respostas" },
-      { id: "sec5_2", text: "Entrar com recurso se houver questão incorreta (prazo do edital)" },
-      { id: "sec5_3", text: "Acompanhar publicação do resultado individual no site do INEP" },
-      { id: "sec5_4", text: "Entender a composição da nota: Formação Geral (25%) + Componente Específico (75%)" },
-      { id: "sec5_5", text: "Saber que a nota do ENAMED substitui a nota do antigo ENADE Medicina" },
-      { id: "sec5_6", text: "Para ENARE: verificar pesos da nota do ENAMED na seleção de residência" },
-      { id: "sec5_7", text: "Verificar como a nota do ENAMED influencia a avaliação da sua IES pelo MEC" },
-      { id: "sec5_8", text: "Acompanhar publicação do ENARE e calendário de inscrição de residência" },
-      { id: "sec5_9", text: "(4º Ano) Lembrar que a nota vale 20% na futura composição do ENARE", profiles: ["4ano"] },
+    title: "Dia da Prova",
+    badge: "ATENÇÃO",
+    badgeColor: "destructive",
+    icon: "MapPin",
+    subsections: [
+      {
+        title: "Antes de Sair de Casa",
+        items: [
+          { id: "sec5_b1", text: "Separar o documento oficial com foto na noite anterior" },
+          { id: "sec5_b2", text: "Separar caneta esferográfica de tinta preta, tubo transparente" },
+          { id: "sec5_b3", text: "Imprimir ou salvar o cartão de confirmação de inscrição (local + horário)" },
+          { id: "sec5_b4", text: "Verificar o endereço do local de prova com antecedência no mapa" },
+          { id: "sec5_b5", text: "Planejar o transporte com margem de segurança (trânsito, estacionamento)" },
+        ],
+      },
+      {
+        title: "Na Chegada ao Local",
+        items: [
+          { id: "sec5_c1", text: "Chegar com pelo menos 1 hora de antecedência — portões fecham no horário" },
+          { id: "sec5_c2", text: "Guardar celular, relógio inteligente e fone de ouvido antes de entrar" },
+          { id: "sec5_c3", text: "Assinar lista de presença e receber o caderno de questões" },
+        ],
+      },
+      {
+        title: "Durante a Prova",
+        items: [
+          { id: "sec5_d1", text: "100 questões de múltipla escolha — 5 alternativas, 1 correta", detail: "Tempo: 5 horas (13h30–18h30). Raciocínio clínico + integração de conhecimentos." },
+          { id: "sec5_d2", text: "Responder ao Questionário do Estudante/Contextual + Questionário de Percepção da Prova", detail: "Obrigatório para todos — parte integrante da avaliação" },
+          { id: "sec5_d3", text: "Atenção: não é possível sair antes do tempo mínimo estabelecido em edital" },
+        ],
+      },
     ],
+    hasNotes: true,
   },
   {
     id: "sec6",
-    title: "Direitos, Acessibilidade e Recursos",
-    badge: "INFORMATIVO",
-    badgeColor: "secondary",
-    icon: "Shield",
-    items: [
-      { id: "sec6_1", text: "Verificar direito a atendimento especial (PcD, gestante, lactante)" },
-      { id: "sec6_2", text: "Solicitar atendimento pelo nome social (se aplicável)" },
-      { id: "sec6_3", text: "Conferir prazos de requerimento de condições especiais" },
-      { id: "sec6_4", text: "Solicitar sala de amamentação (se lactante com bebê até 6 meses)" },
-      { id: "sec6_5", text: "Verificar direito a tempo adicional de prova (laudos médicos)" },
-      { id: "sec6_6", text: "Conhecer canais de ouvidoria e SAC do INEP" },
-      { id: "sec6_7", text: "Verificar política de isenção de taxa para baixa renda / CadÚnico" },
-      { id: "sec6_8", text: "Ler FAQ oficial no site do INEP/ENAMED" },
+    title: "Pós-Prova: Resultado, Recursos e Escolha de Vagas",
+    badge: "RESIDÊNCIA",
+    badgeColor: "accent",
+    icon: "TrendingUp",
+    subsections: [
+      {
+        title: "Resultado e Recursos",
+        items: [
+          { id: "sec6_r1", text: "Conferir gabarito preliminar (~Out 2026) em enamed.inep.gov.br" },
+          { id: "sec6_r2", text: "Interpor recursos contra gabarito ou questões se necessário (prazo geralmente de 2 dias)" },
+          { id: "sec6_r3", text: "Aguardar resultado definitivo e Boletim de Desempenho Individual" },
+        ],
+      },
+      {
+        title: "Processo de Escolha de Vagas — ENARE",
+        alert: { type: "green", text: "A nota do ENAMED tem validade de 3 anos para uso no ENARE. Se não ingressar em 2026/2027, pode usar a mesma nota nas edições 2027/2028 e 2028/2029." },
+        items: [
+          { id: "sec6_e1", text: "Verificar classificação no sistema ENARE (nota bruta do ENAMED usada para classificação)", detail: "A nota do 4º ano valerá 20% da nota final no ENARE a partir de 2026" },
+          { id: "sec6_e2", text: "Participar da escolha de vagas (sistema online — plataforma EBSERH/ENARE)" },
+          { id: "sec6_e3", text: "Apresentar documentação para matrícula na instituição escolhida", detail: "Documentos: RG, CRM, diploma, declaração de conclusão de pré-requisito (se aplicável)" },
+          { id: "sec6_e4", text: "Início da residência médica (previsão: Março 2027)" },
+        ],
+      },
     ],
+    hasNotes: true,
+    notesPlaceholder: "Especialidade desejada, instituições de interesse...",
   },
 ];
 
 export function getAllItems() {
-  return checklistSections.flatMap((s) => s.items);
+  return checklistSections.flatMap((s) => s.subsections.flatMap((sub) => sub.items));
 }
 
 export function getSectionItems(sectionId: string) {
-  return checklistSections.find((s) => s.id === sectionId)?.items ?? [];
+  const section = checklistSections.find((s) => s.id === sectionId);
+  if (!section) return [];
+  return section.subsections.flatMap((sub) => sub.items);
 }
