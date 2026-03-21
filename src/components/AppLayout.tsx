@@ -1,12 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Stethoscope, LayoutDashboard, CheckSquare, Calendar, User, Settings, LogOut, Menu, X } from "lucide-react";
+import { Stethoscope, LayoutDashboard, CheckSquare, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { getAllItems } from "@/data/checklistData";
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 const navItems = [
@@ -32,6 +31,22 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const progressPercent = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("theme") === "dark" || (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -50,7 +65,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {profile?.perfil && (
               <Badge variant="outline" className="hidden md:inline-flex text-xs">
                 {perfilLabel(profile.perfil)}
@@ -59,6 +74,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <span className="text-sm font-medium hidden md:inline truncate max-w-[120px]">
               {profile?.full_name ?? "Usuário"}
             </span>
+            <Button variant="ghost" size="icon" onClick={() => setDarkMode(!darkMode)} title={darkMode ? "Modo claro" : "Modo escuro"}>
+              {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
             <Button variant="ghost" size="icon" onClick={() => signOut()} title="Sair">
               <LogOut className="h-4 w-4" />
             </Button>

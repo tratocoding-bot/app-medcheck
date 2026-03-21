@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import confetti from "canvas-confetti";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -114,6 +115,12 @@ export default function ChecklistPage() {
         );
         if (allChecked && sectionItems.some((item) => item.id === itemId)) {
           toast.success(`🎉 Seção "${section.title}" completa!`);
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ["#c8413b", "#2b4cad", "#2a7a4b", "#c47d14"],
+          });
         }
       }
     }
