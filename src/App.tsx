@@ -12,6 +12,7 @@ import ChecklistPage from "@/pages/ChecklistPage";
 import CronogramaPage from "@/pages/CronogramaPage";
 import PerfilPage from "@/pages/PerfilPage";
 import AdminDatasPage from "@/pages/AdminDatasPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
