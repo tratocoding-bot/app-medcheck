@@ -1,8 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useEnamedDates } from "@/hooks/useEnamedDates";
-import { Clock, CheckCircle2, AlertTriangle, CircleDot } from "lucide-react";
+import { Clock, CheckCircle2, AlertTriangle, CircleDot, Info } from "lucide-react";
 import { useEffect, useState } from "react";
+
+const statusConfig: Record<string, { label: string; className: string }> = {
+  done: { label: "Concluído", className: "bg-success/10 text-success border-success/30" },
+  confirmed: { label: "Confirmado", className: "bg-success/10 text-success border-success/30" },
+  pending: { label: "Previsto", className: "bg-accent/10 text-accent border-accent/30" },
+  waiting: { label: "Aguardando", className: "bg-warning/10 text-warning border-warning/30" },
+};
 
 export default function CronogramaPage() {
   const { data: dates = [], isLoading } = useEnamedDates();
@@ -27,6 +34,7 @@ export default function CronogramaPage() {
 
   const getStatusIcon = (status: string | null, isCritical: boolean | null) => {
     if (status === "done") return <CheckCircle2 className="h-5 w-5 text-success" />;
+    if (status === "waiting") return <AlertTriangle className="h-5 w-5 text-warning" />;
     if (isCritical) return <AlertTriangle className="h-5 w-5 text-primary" />;
     return <CircleDot className="h-5 w-5 text-muted-foreground" />;
   };
@@ -66,6 +74,20 @@ export default function CronogramaPage() {
         </CardContent>
       </Card>
 
+      {/* Info alert */}
+      <div className="flex items-start gap-2 p-3 rounded-lg border bg-accent/10 border-accent/30 text-accent text-sm">
+        <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
+        <span>Datas marcadas com * são propostas no ofício SEI/INEP de dezembro/2025 e ainda aguardam confirmação oficial pelo INEP.</span>
+      </div>
+
+      {/* Status legend */}
+      <div className="flex flex-wrap gap-2">
+        <Badge className="bg-warning/10 text-warning border border-warning/30">🟡 Aguardando</Badge>
+        <Badge className="bg-accent/10 text-accent border border-accent/30">🔵 Previsto</Badge>
+        <Badge className="bg-success/10 text-success border border-success/30">✅ Confirmado</Badge>
+        <Badge className="bg-success/10 text-success border border-success/30">✔️ Concluído</Badge>
+      </div>
+
       {/* Timeline */}
       <Card className="border-0 shadow-sm">
         <CardHeader>
@@ -78,7 +100,7 @@ export default function CronogramaPage() {
             <div className="relative">
               <div className="absolute left-[18px] top-0 bottom-0 w-0.5 bg-border" />
               <div className="space-y-6">
-                {dates.map((date, idx) => (
+                {dates.map((date) => (
                   <div key={date.id} className="relative flex gap-4">
                     <div className="relative z-10 flex-shrink-0 mt-0.5">
                       {getStatusIcon(date.status, date.is_critical)}
@@ -91,10 +113,13 @@ export default function CronogramaPage() {
                           </p>
                           <p className="text-xs text-muted-foreground mt-1">{date.event_date}</p>
                         </div>
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 flex-wrap justify-end">
                           {date.is_critical && <Badge className="bg-primary text-primary-foreground text-xs">ATENÇÃO</Badge>}
-                          {date.status === "done" && <Badge className="bg-success text-success-foreground text-xs">Concluído</Badge>}
-                          {date.status === "confirmed" && <Badge variant="outline" className="text-xs">Confirmado</Badge>}
+                          {date.status && statusConfig[date.status] && (
+                            <Badge className={`text-xs border ${statusConfig[date.status].className}`}>
+                              {statusConfig[date.status].label}
+                            </Badge>
+                          )}
                         </div>
                       </div>
                     </div>

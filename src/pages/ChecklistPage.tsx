@@ -8,13 +8,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { useChecklistNotes } from "@/hooks/useChecklistNotes";
-import { checklistSections, getAllItems } from "@/data/checklistData";
+import { checklistSections, getAllItems, type ChecklistItem } from "@/data/checklistData";
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, BookOpen, FileText, MapPin, TrendingUp, Shield, StickyNote, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, BookOpen, FileText, MapPin, TrendingUp, Shield, StickyNote, ChevronDown, ChevronUp, ClipboardList, Info, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 const sectionIcons: Record<string, React.ElementType> = {
-  Calendar, FileText, BookOpen, MapPin, TrendingUp, Shield,
+  Calendar, FileText, BookOpen, MapPin, TrendingUp, Shield, ClipboardList,
 };
 
 const badgeColors: Record<string, string> = {
@@ -24,12 +24,40 @@ const badgeColors: Record<string, string> = {
   secondary: "bg-secondary text-secondary-foreground",
 };
 
+const tagStyles: Record<string, string> = {
+  obrig: "bg-primary/10 text-primary border-primary/20",
+  enare: "bg-accent/10 text-accent border-accent/20",
+  novo2026: "bg-success/10 text-success border-success/20",
+  alerta: "bg-warning/10 text-warning border-warning/20",
+  aceita: "bg-success/10 text-success border-success/20",
+};
+
+const tagLabels: Record<string, string> = {
+  obrig: "OBRIG.",
+  enare: "ENARE",
+  novo2026: "NOVO 2026",
+  alerta: "ALERTA",
+  aceita: "ACEITA!",
+};
+
 const profileFilters = [
   { value: "all", label: "Todos" },
   { value: "concluinte", label: "🎓 Concluinte 6º Ano" },
   { value: "medico", label: "🩺 Médico Formado" },
   { value: "4ano", label: "📚 4º Ano" },
 ];
+
+const alertStyles = {
+  blue: "bg-accent/10 border-accent/30 text-accent",
+  yellow: "bg-warning/10 border-warning/30 text-warning",
+  green: "bg-success/10 border-success/30 text-success",
+};
+
+const alertIcons = {
+  blue: Info,
+  yellow: AlertTriangle,
+  green: Info,
+};
 
 export default function ChecklistPage() {
   const { profile } = useAuth();
@@ -45,7 +73,6 @@ export default function ChecklistPage() {
   const totalItems = allItems.length;
   const progressPercent = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
 
-  // Auto-expand section from URL
   useEffect(() => {
     const sectionParam = searchParams.get("section");
     if (sectionParam) {
@@ -53,7 +80,6 @@ export default function ChecklistPage() {
     }
   }, [searchParams]);
 
-  // Initialize all sections as expanded
   useEffect(() => {
     const initial: Record<string, boolean> = {};
     checklistSections.forEach((s) => { initial[s.id] = true; });
@@ -80,10 +106,9 @@ export default function ChecklistPage() {
     const newChecked = !isChecked(itemId);
     toggleItem.mutate({ itemId, checked: newChecked });
 
-    // Check if a section is 100% complete
     if (newChecked) {
       for (const section of checklistSections) {
-        const sectionItems = section.items;
+        const sectionItems = section.subsections.flatMap((sub) => sub.items);
         const allChecked = sectionItems.every((item) =>
           item.id === itemId ? true : isChecked(item.id)
         );
@@ -94,10 +119,63 @@ export default function ChecklistPage() {
     }
   };
 
-  const itemMatchesFilter = (item: { profiles?: string[] }) => {
+  const itemMatchesFilter = (item: ChecklistItem) => {
     if (activeFilter === "all") return true;
     if (!item.profiles || item.profiles.length === 0) return true;
     return item.profiles.includes(activeFilter);
+  };
+
+  const renderAlert = (alert: { type: "blue" | "yellow" | "green"; text: string }) => {
+    const AlertIcon = alertIcons[alert.type];
+    return (
+      <div className={`flex items-start gap-2 p-3 rounded-lg border text-sm ${alertStyles[alert.type]}`}>
+        <AlertIcon className="h-4 w-4 mt-0.5 flex-shrink-0" />
+        <span>{alert.text}</span>
+      </div>
+    );
+  };
+
+  const renderItem = (item: ChecklistItem) => {
+    const matches = itemMatchesFilter(item);
+    const checked = isChecked(item.id);
+    return (
+      <div
+        key={item.id}
+        className={`flex flex-col gap-1 p-3 rounded-lg transition-all ${
+          !matches ? "opacity-40" : ""
+        } ${matches && !checked ? "hover:bg-secondary/30" : ""} ${
+          checked ? "bg-success/5" : ""
+        } ${matches && item.profiles && item.profiles.length > 0 ? "border-l-2 border-primary/40" : ""}`}
+      >
+        <div className="flex items-start gap-3">
+          <Checkbox
+            checked={checked}
+            onCheckedChange={() => handleToggleItem(item.id)}
+            className={`mt-0.5 ${checked ? "animate-check-bounce" : ""}`}
+          />
+          <div className="flex-1 min-w-0">
+            <span className={`text-sm ${checked ? "line-through text-muted-foreground" : ""}`}>
+              {item.emoji ? `${item.emoji} ` : ""}{item.text}
+            </span>
+            {item.detail && (
+              <p className="text-xs text-muted-foreground mt-1 pl-0">{item.detail}</p>
+            )}
+          </div>
+          <div className="flex items-center gap-1 flex-shrink-0 flex-wrap justify-end">
+            {item.tags?.map((tag) => (
+              <span key={tag} className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${tagStyles[tag] ?? ""}`}>
+                {tagLabels[tag] ?? tag}
+              </span>
+            ))}
+            {item.profiles && item.profiles.length > 0 && (
+              <Badge variant="outline" className="text-xs">
+                {item.profiles.map((p) => p === "concluinte" ? "🎓" : p === "medico" ? "🩺" : "📚").join("")}
+              </Badge>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -136,8 +214,9 @@ export default function ChecklistPage() {
       {/* Sections */}
       {checklistSections.map((section) => {
         const Icon = sectionIcons[section.icon] || Calendar;
-        const sectionChecked = section.items.filter((item) => isChecked(item.id)).length;
-        const sectionTotal = section.items.length;
+        const sectionItems = section.subsections.flatMap((sub) => sub.items);
+        const sectionChecked = sectionItems.filter((item) => isChecked(item.id)).length;
+        const sectionTotal = sectionItems.length;
         const sectionPct = sectionTotal > 0 ? Math.round((sectionChecked / sectionTotal) * 100) : 0;
         const expanded = expandedSections[section.id] !== false;
 
@@ -153,7 +232,7 @@ export default function ChecklistPage() {
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <CardTitle className="text-base">{section.title}</CardTitle>
                       <Badge className={`text-xs ${badgeColors[section.badgeColor] ?? ""}`}>
                         {section.badge}
@@ -161,7 +240,9 @@ export default function ChecklistPage() {
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       <Progress value={sectionPct} className="h-1.5 w-24" />
-                      <span className="text-xs text-muted-foreground">{sectionChecked}/{sectionTotal}</span>
+                      <span className={`text-xs ${sectionPct === 100 ? "text-success font-semibold" : "text-muted-foreground"}`}>
+                        {sectionPct === 100 ? "✓ " : ""}{sectionChecked}/{sectionTotal}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -170,61 +251,49 @@ export default function ChecklistPage() {
             </CardHeader>
 
             {expanded && (
-              <CardContent className="pt-0 space-y-2">
-                {section.items.map((item) => {
-                  const matches = itemMatchesFilter(item);
-                  const checked = isChecked(item.id);
-                  return (
-                    <div
-                      key={item.id}
-                      className={`flex items-start gap-3 p-3 rounded-lg transition-all ${
-                        !matches ? "opacity-40" : ""
-                      } ${matches && !checked ? "hover:bg-secondary/30" : ""} ${
-                        checked ? "bg-success/5" : ""
-                      } ${matches && item.profiles && item.profiles.length > 0 ? "border-l-2 border-primary/40" : ""}`}
-                    >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={() => handleToggleItem(item.id)}
-                        className={`mt-0.5 ${checked ? "animate-check-bounce" : ""}`}
-                      />
-                      <span className={`text-sm flex-1 ${checked ? "line-through text-muted-foreground" : ""}`}>
-                        {item.text} {item.emoji ?? ""}
-                      </span>
-                      {item.profiles && item.profiles.length > 0 && (
-                        <Badge variant="outline" className="text-xs flex-shrink-0">
-                          {item.profiles.map((p) => p === "concluinte" ? "🎓" : p === "medico" ? "🩺" : "📚").join("")}
-                        </Badge>
-                      )}
+              <CardContent className="pt-0 space-y-4">
+                {/* Section-level alert */}
+                {section.alert && renderAlert(section.alert)}
+
+                {section.subsections.map((subsection, subIdx) => (
+                  <div key={subIdx} className="space-y-2">
+                    <h3 className="text-sm font-semibold text-foreground/80 pt-2 border-b border-border/50 pb-1">
+                      {subsection.title}
+                    </h3>
+                    {subsection.alert && renderAlert(subsection.alert)}
+                    <div className="space-y-1">
+                      {subsection.items.map(renderItem)}
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
 
                 {/* Notes */}
-                <div className="pt-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleNote(section.id)}
-                    className="text-muted-foreground"
-                  >
-                    <StickyNote className="h-4 w-4 mr-1" />
-                    📝 Anotações
-                  </Button>
-                  {openNotes[section.id] && (
-                    <div className="mt-2 space-y-2">
-                      <Textarea
-                        value={noteTexts[section.id] ?? ""}
-                        onChange={(e) => handleNoteChange(section.id, e.target.value)}
-                        placeholder="Suas anotações para esta seção..."
-                        className="min-h-[80px]"
-                      />
-                      <Button size="sm" onClick={() => handleNoteSave(section.id)}>
-                        Salvar nota
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                {section.hasNotes && (
+                  <div className="pt-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => { e.stopPropagation(); toggleNote(section.id); }}
+                      className="text-muted-foreground"
+                    >
+                      <StickyNote className="h-4 w-4 mr-1" />
+                      📝 Anotações
+                    </Button>
+                    {openNotes[section.id] && (
+                      <div className="mt-2 space-y-2">
+                        <Textarea
+                          value={noteTexts[section.id] ?? ""}
+                          onChange={(e) => handleNoteChange(section.id, e.target.value)}
+                          placeholder={section.notesPlaceholder ?? "Suas anotações para esta seção..."}
+                          className="min-h-[80px]"
+                        />
+                        <Button size="sm" onClick={() => handleNoteSave(section.id)}>
+                          Salvar nota
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </CardContent>
             )}
           </Card>
