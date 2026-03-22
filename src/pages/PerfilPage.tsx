@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Progress } from "@/components/ui/progress";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,15 +19,22 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
+import { useUserStats } from "@/hooks/useUserStats";
 import { getAllItems, checklistSections } from "@/data/checklistData";
+import { getLevelForXP, getScoreLevel, calculateEnamedScore } from "@/data/clinicalQuestions";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { User, Save, Download, Trash2, KeyRound } from "lucide-react";
+import { User, Save, Download, Trash2, KeyRound, Trophy, Flame } from "lucide-react";
 
 export default function PerfilPage() {
   const { user, profile, refreshProfile } = useAuth();
   const { checkedCount, progress } = useChecklistProgress();
+  const { stats } = useUserStats();
   const totalItems = getAllItems().length;
+  const accuracy = (stats?.questions_answered ?? 0) > 0 ? (stats?.questions_correct ?? 0) / (stats?.questions_answered ?? 0) : 0;
+  const enamedScore = calculateEnamedScore(accuracy, stats?.streak ?? 0, totalItems > 0 ? checkedCount / totalItems : 0);
+  const scoreLevel = getScoreLevel(enamedScore);
+  const level = getLevelForXP(stats?.xp ?? 0);
   const queryClient = useQueryClient();
 
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
@@ -168,6 +176,24 @@ export default function PerfilPage() {
               <p className="text-2xl font-bold text-success">{completedSections}</p>
               <p className="text-xs text-muted-foreground">Seções 100%</p>
             </div>
+            <div className="p-3 rounded-lg bg-secondary/30 text-center">
+              <p className="text-2xl font-bold text-accent">{enamedScore}</p>
+              <p className="text-xs text-muted-foreground">ENAMED Score</p>
+            </div>
+            <div className="p-3 rounded-lg bg-secondary/30 text-center">
+              <div className="flex items-center justify-center gap-1">
+                <Flame className="h-4 w-4 text-warning" />
+                <p className="text-2xl font-bold">{stats?.streak ?? 0}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Dias seguidos</p>
+            </div>
+          </div>
+          <div className="p-3 rounded-lg bg-secondary/30">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-medium flex items-center gap-1"><Trophy className="h-3 w-3 text-warning" /> {scoreLevel.label}</span>
+              <span className="text-xs">{level.emoji} {level.label} — {stats?.xp ?? 0} XP</span>
+            </div>
+            <Progress value={enamedScore / 10} className="h-1.5" />
           </div>
           <p className="text-xs text-muted-foreground">
             Conta criada em: {profile?.created_at ? new Date(profile.created_at).toLocaleDateString("pt-BR") : "—"}

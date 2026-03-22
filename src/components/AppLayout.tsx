@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Stethoscope, LayoutDashboard, CheckSquare, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon } from "lucide-react";
+import { Stethoscope, LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
@@ -10,9 +10,10 @@ import { Badge } from "@/components/ui/badge";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/checklist", label: "Meu Checklist", icon: CheckSquare },
+  { to: "/checklist", label: "Checklist", icon: CheckSquare },
+  { to: "/aprovacao", label: "Aprovação", icon: Target },
   { to: "/cronograma", label: "Cronograma", icon: Calendar },
-  { to: "/perfil", label: "Meu Perfil", icon: User },
+  { to: "/perfil", label: "Perfil", icon: User },
 ];
 
 function perfilLabel(perfil: string | null) {
