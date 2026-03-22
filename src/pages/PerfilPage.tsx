@@ -175,6 +175,24 @@ export default function PerfilPage() {
               <p className="text-2xl font-bold text-success">{completedSections}</p>
               <p className="text-xs text-muted-foreground">Seções 100%</p>
             </div>
+            <div className="p-3 rounded-lg bg-secondary/30 text-center">
+              <p className="text-2xl font-bold text-accent">{enamedScore}</p>
+              <p className="text-xs text-muted-foreground">ENAMED Score</p>
+            </div>
+            <div className="p-3 rounded-lg bg-secondary/30 text-center">
+              <div className="flex items-center justify-center gap-1">
+                <Flame className="h-4 w-4 text-warning" />
+                <p className="text-2xl font-bold">{stats?.streak ?? 0}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">Dias seguidos</p>
+            </div>
+          </div>
+          <div className="p-3 rounded-lg bg-secondary/30">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-medium flex items-center gap-1"><Trophy className="h-3 w-3 text-warning" /> {scoreLevel.label}</span>
+              <span className="text-xs">{level.emoji} {level.label} — {stats?.xp ?? 0} XP</span>
+            </div>
+            <Progress value={enamedScore / 10} className="h-1.5" />
           </div>
           <p className="text-xs text-muted-foreground">
             Conta criada em: {profile?.created_at ? new Date(profile.created_at).toLocaleDateString("pt-BR") : "—"}
