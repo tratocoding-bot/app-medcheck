@@ -83,6 +83,42 @@ export type Database = {
         }
         Relationships: []
       }
+      clinical_questions: {
+        Row: {
+          created_at: string | null
+          difficulty: string | null
+          display_order: number | null
+          explanation: string | null
+          id: string
+          options: Json
+          question: string
+          scenario: string
+          theme: string
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty?: string | null
+          display_order?: number | null
+          explanation?: string | null
+          id?: string
+          options: Json
+          question: string
+          scenario: string
+          theme: string
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: string | null
+          display_order?: number | null
+          explanation?: string | null
+          id?: string
+          options?: Json
+          question?: string
+          scenario?: string
+          theme?: string
+        }
+        Relationships: []
+      }
       enamed_dates: {
         Row: {
           display_order: number | null
@@ -137,6 +173,41 @@ export type Database = {
         }
         Relationships: []
       }
+      user_answers: {
+        Row: {
+          answered_at: string | null
+          id: string
+          is_correct: boolean
+          question_id: string
+          selected_option: number
+          user_id: string
+        }
+        Insert: {
+          answered_at?: string | null
+          id?: string
+          is_correct: boolean
+          question_id: string
+          selected_option: number
+          user_id: string
+        }
+        Update: {
+          answered_at?: string | null
+          id?: string
+          is_correct?: boolean
+          question_id?: string
+          selected_option?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "clinical_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -152,6 +223,45 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_stats: {
+        Row: {
+          clinical_level: string | null
+          created_at: string | null
+          enamed_score: number | null
+          last_active_date: string | null
+          questions_answered: number | null
+          questions_correct: number | null
+          streak: number | null
+          updated_at: string | null
+          user_id: string
+          xp: number | null
+        }
+        Insert: {
+          clinical_level?: string | null
+          created_at?: string | null
+          enamed_score?: number | null
+          last_active_date?: string | null
+          questions_answered?: number | null
+          questions_correct?: number | null
+          streak?: number | null
+          updated_at?: string | null
+          user_id: string
+          xp?: number | null
+        }
+        Update: {
+          clinical_level?: string | null
+          created_at?: string | null
+          enamed_score?: number | null
+          last_active_date?: string | null
+          questions_answered?: number | null
+          questions_correct?: number | null
+          streak?: number | null
+          updated_at?: string | null
+          user_id?: string
+          xp?: number | null
         }
         Relationships: []
       }
