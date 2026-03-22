@@ -29,8 +29,12 @@ import { User, Save, Download, Trash2, KeyRound, Trophy, Flame } from "lucide-re
 export default function PerfilPage() {
   const { user, profile, refreshProfile } = useAuth();
   const { checkedCount, progress } = useChecklistProgress();
+  const { stats } = useUserStats();
   const totalItems = getAllItems().length;
-  const queryClient = useQueryClient();
+  const accuracy = (stats?.questions_answered ?? 0) > 0 ? (stats?.questions_correct ?? 0) / (stats?.questions_answered ?? 0) : 0;
+  const enamedScore = calculateEnamedScore(accuracy, stats?.streak ?? 0, totalItems > 0 ? checkedCount / totalItems : 0);
+  const scoreLevel = getScoreLevel(enamedScore);
+  const level = getLevelForXP(stats?.xp ?? 0);
 
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
   const [perfil, setPerfil] = useState(profile?.perfil ?? "concluinte");
