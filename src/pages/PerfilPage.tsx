@@ -35,6 +35,7 @@ export default function PerfilPage() {
   const enamedScore = calculateEnamedScore(accuracy, stats?.streak ?? 0, totalItems > 0 ? checkedCount / totalItems : 0);
   const scoreLevel = getScoreLevel(enamedScore);
   const level = getLevelForXP(stats?.xp ?? 0);
+  const queryClient = useQueryClient();
 
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
   const [perfil, setPerfil] = useState(profile?.perfil ?? "concluinte");
