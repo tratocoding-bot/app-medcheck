@@ -10,9 +10,10 @@ import { Badge } from "@/components/ui/badge";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/checklist", label: "Meu Checklist", icon: CheckSquare },
+  { to: "/checklist", label: "Checklist", icon: CheckSquare },
+  { to: "/aprovacao", label: "Aprovação", icon: Target },
   { to: "/cronograma", label: "Cronograma", icon: Calendar },
-  { to: "/perfil", label: "Meu Perfil", icon: User },
+  { to: "/perfil", label: "Perfil", icon: User },
 ];
 
 function perfilLabel(perfil: string | null) {
