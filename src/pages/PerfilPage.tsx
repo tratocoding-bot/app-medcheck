@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Progress } from "@/components/ui/progress";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,10 +19,12 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
+import { useUserStats } from "@/hooks/useUserStats";
 import { getAllItems, checklistSections } from "@/data/checklistData";
+import { getLevelForXP, getScoreLevel, calculateEnamedScore } from "@/data/clinicalQuestions";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { User, Save, Download, Trash2, KeyRound } from "lucide-react";
+import { User, Save, Download, Trash2, KeyRound, Trophy, Flame } from "lucide-react";
 
 export default function PerfilPage() {
   const { user, profile, refreshProfile } = useAuth();
