@@ -30,7 +30,7 @@ export default function AprovacaoPage() {
   useEffect(() => { ensureStats(); }, []);
 
   const answeredIds = new Set(answers.map((a: any) => a.question_id));
-  const unlockedCount = Math.min(questions.length, 5 + Math.floor((stats?.xp ?? 0) / 30));
+  const unlockedCount = Math.min(questions.length, 10 + Math.floor((stats?.xp ?? 0) / 15));
   
   const xp = stats?.xp ?? 0;
   const streak = stats?.streak ?? 0;
