@@ -45,7 +45,7 @@ export const checklistSections: ChecklistSection[] = [
           { id: "sec1_2", text: "Configurar lembrete no celular para ~Jun 2026 (publicação do edital)" },
           { id: "sec1_3", text: "Configurar lembrete para ~Jul 2026 (abertura das inscrições)" },
           { id: "sec1_4", text: "Confirmar com a coordenação o calendário da instituição", profiles: ["concluinte"] },
-          { id: "sec1_5", text: "Verificar isenção de taxa do ENARE antes do período de inscrições", tags: ["alerta"] },
+          { id: "sec1_5", text: "Verificar isenção da taxa do ENARE antes do período de inscrição", detail: "A isenção da taxa do ENARE só pode ser solicitada dentro do próprio período do edital, junto com a inscrição. Você precisa preencher o formulário de inscrição e marcar a opção de isenção, anexando os documentos comprobatórios. Existe um prazo específico (curto) só para isso — normalmente nos primeiros dias da inscrição.", tags: ["alerta"] },
         ],
       },
     ],
