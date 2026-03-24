@@ -130,6 +130,12 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
 
   return (
     <div className="space-y-6">
+      {/* Reset button */}
+      <div className="flex justify-end">
+        <Button variant="destructive" size="sm" onClick={handleResetAll} disabled={resetProgress.isPending}>
+          <Trash2 className="mr-2 h-4 w-4" /> Resetar Estatísticas
+        </Button>
+      </div>
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="border-0 shadow-sm">
