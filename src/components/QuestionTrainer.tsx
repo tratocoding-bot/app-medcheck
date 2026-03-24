@@ -103,6 +103,17 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
     setSessionTotal(0);
   };
 
+  const handleResetAll = async () => {
+    if (!confirm("Tem certeza que deseja resetar todas as estatísticas e respostas? Esta ação não pode ser desfeita.")) return;
+    try {
+      await resetProgress.mutateAsync();
+      handleRestart();
+      toast.success("Estatísticas resetadas com sucesso!");
+    } catch {
+      toast.error("Erro ao resetar estatísticas");
+    }
+  };
+
   if (isLoading) return <div className="flex items-center justify-center py-20"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>;
 
   if (questions.length === 0) {
