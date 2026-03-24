@@ -7,10 +7,10 @@ import QuestionTrainer from "@/components/QuestionTrainer";
 const specialtyTabs = [
   { key: "geral", label: "Geral", themes: null }, // null = all questions
   { key: "clinica_medica", label: "Clínica Médica", themes: ["clinica_medica", "cardiologia", "pneumologia", "nefrologia", "endocrinologia", "reumatologia", "gastroenterologia", "infectologia"] },
-  { key: "cirurgia", label: "Cirurgia Geral", themes: ["cirurgia"] },
+  { key: "cirurgia", label: "Cirurgia Geral", themes: ["cirurgia", "urgencia"] },
   { key: "ginecologia", label: "Ginecologia e Obstetrícia", themes: ["ginecologia"] },
   { key: "pediatria", label: "Pediatria", themes: ["pediatria"] },
-  { key: "medicina_familia", label: "Med. Família", themes: ["medicina_familia"] },
+  { key: "medicina_familia", label: "Med. Família", themes: ["medicina_familia", "etica"] },
   { key: "saude_coletiva", label: "Saúde Coletiva", themes: ["saude_coletiva"] },
   { key: "saude_mental", label: "Saúde Mental", themes: ["saude_mental"] },
 ];
