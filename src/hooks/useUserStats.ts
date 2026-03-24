@@ -61,7 +61,37 @@ export function useUserStats() {
     },
   });
 
-  return { stats, isLoading, recordAnswer, ensureStats };
+  const resetProgress = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      // Delete all user answers
+      const { error: delError } = await supabase
+        .from("user_answers")
+        .delete()
+        .eq("user_id", user.id);
+      if (delError) throw delError;
+      // Reset stats to zero
+      const { error: updError } = await supabase
+        .from("user_stats")
+        .update({
+          xp: 0,
+          streak: 0,
+          questions_answered: 0,
+          questions_correct: 0,
+          enamed_score: 0,
+          clinical_level: "interno",
+          last_active_date: null,
+        })
+        .eq("user_id", user.id);
+      if (updError) throw updError;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["user-answers", user?.id] });
+    },
+  });
+
+  return { stats, isLoading, recordAnswer, ensureStats, resetProgress };
 }
 
 export function useUserAnswers() {

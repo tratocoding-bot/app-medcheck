@@ -7,7 +7,7 @@ import { useUserStats, useUserAnswers, useWeakPoints } from "@/hooks/useUserStat
 import { themeInfo, getLevelForXP, getScoreLevel, calculateEnamedScore } from "@/data/clinicalQuestions";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { getAllItems } from "@/data/checklistData";
-import { CheckCircle2, XCircle, Trophy, Flame, Brain, Target, ArrowRight, RotateCcw, Lock, Zap } from "lucide-react";
+import { CheckCircle2, XCircle, Trophy, Flame, Brain, Target, ArrowRight, RotateCcw, Lock, Zap, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 
@@ -19,7 +19,7 @@ interface QuestionTrainerProps {
 
 export default function QuestionTrainer({ questions, isLoading, tabLabel }: QuestionTrainerProps) {
   const { data: answers = [] } = useUserAnswers();
-  const { stats, recordAnswer, ensureStats } = useUserStats();
+  const { stats, recordAnswer, ensureStats, resetProgress } = useUserStats();
   const weakPoints = useWeakPoints();
   const { checkedCount } = useChecklistProgress();
   const totalItems = getAllItems().length;
@@ -103,6 +103,17 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
     setSessionTotal(0);
   };
 
+  const handleResetAll = async () => {
+    if (!confirm("Tem certeza que deseja resetar todas as estatísticas e respostas? Esta ação não pode ser desfeita.")) return;
+    try {
+      await resetProgress.mutateAsync();
+      handleRestart();
+      toast.success("Estatísticas resetadas com sucesso!");
+    } catch {
+      toast.error("Erro ao resetar estatísticas");
+    }
+  };
+
   if (isLoading) return <div className="flex items-center justify-center py-20"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>;
 
   if (questions.length === 0) {
@@ -119,6 +130,12 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
 
   return (
     <div className="space-y-6">
+      {/* Reset button */}
+      <div className="flex justify-end">
+        <Button variant="destructive" size="sm" onClick={handleResetAll} disabled={resetProgress.isPending}>
+          <Trash2 className="mr-2 h-4 w-4" /> Resetar Estatísticas
+        </Button>
+      </div>
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="border-0 shadow-sm">
