@@ -14,6 +14,8 @@ export const themeInfo: Record<string, { label: string; icon: string; color: str
   endocrinologia: { label: "Endocrinologia", icon: "💉", color: "text-teal-500" },
   reumatologia: { label: "Reumatologia", icon: "🦴", color: "text-amber-500" },
   gastroenterologia: { label: "Gastroenterologia", icon: "🔬", color: "text-yellow-600" },
+  clinica_medica: { label: "Clínica Médica", icon: "🩺", color: "text-blue-600" },
+  medicina_familia: { label: "Med. Família e Comunidade", icon: "🏠", color: "text-emerald-500" },
 };
 
 export const clinicalLevels = [
