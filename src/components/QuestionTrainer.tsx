@@ -7,7 +7,7 @@ import { useUserStats, useUserAnswers, useWeakPoints } from "@/hooks/useUserStat
 import { themeInfo, getLevelForXP, getScoreLevel, calculateEnamedScore } from "@/data/clinicalQuestions";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { getAllItems } from "@/data/checklistData";
-import { CheckCircle2, XCircle, Trophy, Flame, Brain, Target, ArrowRight, RotateCcw, Lock, Zap } from "lucide-react";
+import { CheckCircle2, XCircle, Trophy, Flame, Brain, Target, ArrowRight, RotateCcw, Lock, Zap, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 
