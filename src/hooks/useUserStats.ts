@@ -46,38 +46,14 @@ export function useUserStats() {
     }) => {
       if (!user) throw new Error("Not authenticated");
 
-      // Insert answer
-      await supabase.from("user_answers").insert({
+      // Insert answer — server-side triggers validate correctness and update stats
+      const { error } = await supabase.from("user_answers").insert({
         user_id: user.id,
         question_id: questionId,
         selected_option: selectedOption,
-        is_correct: isCorrect,
+        is_correct: isCorrect, // Will be overridden server-side by trigger
       });
-
-      // Update stats
-      const current = await ensureStats();
-      if (!current) return;
-
-      const today = new Date().toISOString().slice(0, 10);
-      const lastActive = current.last_active_date;
-      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-      
-      let newStreak = current.streak ?? 0;
-      if (lastActive === yesterday) newStreak += 1;
-      else if (lastActive !== today) newStreak = 1;
-
-      const newAnswered = (current.questions_answered ?? 0) + 1;
-      const newCorrect = (current.questions_correct ?? 0) + (isCorrect ? 1 : 0);
-      const xpGain = isCorrect ? 15 : 3;
-
-      await supabase.from("user_stats").update({
-        xp: (current.xp ?? 0) + xpGain,
-        streak: newStreak,
-        last_active_date: today,
-        questions_answered: newAnswered,
-        questions_correct: newCorrect,
-        updated_at: new Date().toISOString(),
-      }).eq("user_id", user.id);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
