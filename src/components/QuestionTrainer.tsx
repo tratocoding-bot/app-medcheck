@@ -20,7 +20,6 @@ interface QuestionTrainerProps {
 export default function QuestionTrainer({ questions, isLoading, tabLabel }: QuestionTrainerProps) {
   const { data: answers = [] } = useUserAnswers();
   const { stats, recordAnswer, ensureStats, resetProgress } = useUserStats();
-  const { stats, recordAnswer, ensureStats } = useUserStats();
   const weakPoints = useWeakPoints();
   const { checkedCount } = useChecklistProgress();
   const totalItems = getAllItems().length;
