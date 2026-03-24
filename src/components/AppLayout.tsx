@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/checklist", label: "Checklist", icon: CheckSquare },
-  { to: "/aprovacao", label: "Aprovação", icon: Target },
+  { to: "/aprovacao", label: "Aprovação Geral", icon: Target },
   { to: "/cronograma", label: "Cronograma", icon: Calendar },
   { to: "/perfil", label: "Perfil", icon: User },
 ];
