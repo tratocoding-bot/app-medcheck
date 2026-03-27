@@ -9,7 +9,6 @@ import LoginPage from "@/pages/LoginPage";
 import CadastroPage from "@/pages/CadastroPage";
 import DashboardPage from "@/pages/DashboardPage";
 import ChecklistPage from "@/pages/ChecklistPage";
-import AprovacaoPage from "@/pages/AprovacaoPage";
 import AreaPraticaPage from "@/pages/AreaPraticaPage";
 import CronogramaPage from "@/pages/CronogramaPage";
 import PerfilPage from "@/pages/PerfilPage";
@@ -53,7 +52,6 @@ const App = () => (
             <Route path="/cadastro" element={<PublicRoute><CadastroPage /></PublicRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/checklist" element={<ProtectedRoute><ChecklistPage /></ProtectedRoute>} />
-            <Route path="/aprovacao" element={<ProtectedRoute><AprovacaoPage /></ProtectedRoute>} />
             <Route path="/pratica/:area" element={<ProtectedRoute><AreaPraticaPage /></ProtectedRoute>} />
             <Route path="/cronograma" element={<ProtectedRoute><CronogramaPage /></ProtectedRoute>} />
             <Route path="/perfil" element={<ProtectedRoute><PerfilPage /></ProtectedRoute>} />

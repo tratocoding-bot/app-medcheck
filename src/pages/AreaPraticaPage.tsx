@@ -65,13 +65,6 @@ export default function AreaPraticaPage() {
         <p className="text-muted-foreground">Prática focada com 500 questões de {areaTitle}</p>
       </div>
 
-      <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20 mb-3">
-        <Info className="h-4 w-4 text-primary flex-shrink-0" />
-        <p className="text-sm text-primary font-medium">
-          Casos clínicos selecionados aleatoriamente para simular a prova real
-        </p>
-      </div>
-
       <QuestionTrainer
         questions={filteredQuestions}
         isLoading={isLoading}
