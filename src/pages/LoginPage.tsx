@@ -75,18 +75,15 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-4">
         <Card className="shadow-lg border-0 bg-card">
           <CardHeader className="text-center pb-2">
-            {/* Logo icon */}
-            <div className="flex flex-col items-center gap-3 mb-4">
-              <img
-                src="/enamed-icon.png"
-                alt="ENAMED Check Icon"
-                className="h-20 w-20 object-contain drop-shadow-md"
-              />
-              <img
-                src="/enamed-logo.png"
-                alt="ENAMED Check"
-                className="h-12 object-contain"
-              />
+            {/* Logo */}
+            <div className="flex justify-center mb-6 mt-2">
+              <div className="bg-white/80 p-2 rounded-xl backdrop-blur-sm shadow-sm inline-block">
+                <img
+                  src="/enamed-logo.png"
+                  alt="ENAMED Check"
+                  className="h-16 md:h-20 object-contain drop-shadow-sm"
+                />
+              </div>
             </div>
             <CardTitle className="text-xl">Bem-vindo de volta</CardTitle>
             <CardDescription>Entre com sua conta para continuar</CardDescription>

@@ -60,9 +60,15 @@ export default function CadastroPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md shadow-lg border-0 bg-card">
         <CardHeader className="text-center pb-2">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Stethoscope className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-primary">ENAMED Check</span>
+          {/* Logo */}
+          <div className="flex justify-center mb-6 mt-2">
+            <div className="bg-white/80 p-2 rounded-xl backdrop-blur-sm shadow-sm inline-block">
+              <img
+                src="/enamed-logo.png"
+                alt="ENAMED Check"
+                className="h-16 md:h-20 object-contain drop-shadow-sm"
+              />
+            </div>
           </div>
           <CardTitle className="text-xl">Criar Conta</CardTitle>
           <CardDescription>Cadastre-se para acompanhar seu progresso</CardDescription>
@@ -120,7 +126,29 @@ export default function CadastroPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <div className="space-y-3 pt-4 border-t border-border/50">
+              <div>
+                <Label className="text-base font-semibold text-primary">Indique seus colegas (Opcional)</Label>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Recomende o ENAMED Check, o app que mais ajuda na aprovação!
+                </p>
+              </div>
+              
+              <div className="space-y-3 mt-3">
+                {[1, 2, 3, 4, 5].map((index) => (
+                  <div key={index} className="flex gap-2">
+                    <div className="flex-1">
+                      <Input placeholder={`Nome do colega ${index}`} className="text-xs h-9" />
+                    </div>
+                    <div className="flex-1">
+                      <Input type="tel" placeholder="WhatsApp" className="text-xs h-9" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full mt-6" disabled={loading}>
               <UserPlus className="mr-2 h-4 w-4" />
               {loading ? "Criando conta..." : "Criar conta"}
             </Button>

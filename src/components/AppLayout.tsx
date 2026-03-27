@@ -56,8 +56,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <img src="/enamed-icon.png" alt="ENAMED Check" className="h-8 w-8 object-contain" />
-            <img src="/enamed-logo.png" alt="ENAMED Check" className="h-7 object-contain hidden sm:inline" />
+            <img src="/enamed-icon.png" alt="ENAMED Check" className="h-8 w-8 object-contain drop-shadow-sm" />
           </Link>
 
           <div className="flex-1 max-w-xs mx-4 hidden sm:block">
