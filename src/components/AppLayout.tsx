@@ -1,12 +1,13 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Stethoscope, LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { getAllItems } from "@/data/checklistData";
 import { Badge } from "@/components/ui/badge";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -55,8 +56,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <Stethoscope className="h-6 w-6 text-primary" />
-            <span className="font-bold text-primary text-lg hidden sm:inline">ENAMED Check</span>
+            <img src="/enamed-icon.png" alt="ENAMED Check" className="h-8 w-8 object-contain" />
+            <img src="/enamed-logo.png" alt="ENAMED Check" className="h-7 object-contain hidden sm:inline" />
           </Link>
 
           <div className="flex-1 max-w-xs mx-4 hidden sm:block">
@@ -194,6 +195,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       )}
+
+      {/* WhatsApp floating button */}
+      <WhatsAppButton />
     </div>
   );
 }

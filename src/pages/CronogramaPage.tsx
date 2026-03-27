@@ -14,8 +14,13 @@ const statusConfig: Record<string, { label: string; className: string }> = {
 export default function CronogramaPage() {
   const { data: dates = [], isLoading } = useEnamedDates();
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  
+  const hasOfficialDate = false;
 
   useEffect(() => {
+    if (!hasOfficialDate) return;
+    
+    // Fallback if Date gets defined
     const examDate = new Date(2026, 8, 13, 8, 0, 0);
     const update = () => {
       const now = new Date();
@@ -30,7 +35,7 @@ export default function CronogramaPage() {
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [hasOfficialDate]);
 
   const getStatusIcon = (status: string | null, isCritical: boolean | null) => {
     if (status === "done") return <CheckCircle2 className="h-5 w-5 text-success" />;
@@ -49,27 +54,33 @@ export default function CronogramaPage() {
       {/* Countdown card */}
       <Card className="border-0 shadow-md bg-primary/5 border-primary/20">
         <CardContent className="pt-6">
-          <div className="text-center">
+          <div className="text-center pb-4">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Clock className="h-5 w-5 text-primary" />
-              <span className="font-semibold text-primary">Contagem Regressiva — Dia da Prova</span>
+              <span className="font-semibold text-primary">Data da Prova ENAMED 2026</span>
             </div>
-            <div className="flex justify-center gap-4">
-              {[
-                { value: countdown.days, label: "dias" },
-                { value: countdown.hours, label: "horas" },
-                { value: countdown.minutes, label: "min" },
-                { value: countdown.seconds, label: "seg" },
-              ].map((unit) => (
-                <div key={unit.label} className="text-center">
-                  <span className="text-3xl md:text-4xl font-bold text-primary tabular-nums">
-                    {String(unit.value).padStart(2, "0")}
-                  </span>
-                  <p className="text-xs text-muted-foreground mt-1">{unit.label}</p>
-                </div>
-              ))}
-            </div>
-            <p className="text-sm text-muted-foreground mt-3">13 de setembro de 2026</p>
+            {hasOfficialDate ? (
+              <div className="flex justify-center gap-4">
+                {[
+                  { value: countdown.days, label: "dias" },
+                  { value: countdown.hours, label: "horas" },
+                  { value: countdown.minutes, label: "min" },
+                  { value: countdown.seconds, label: "seg" },
+                ].map((unit) => (
+                  <div key={unit.label} className="text-center">
+                    <span className="text-3xl md:text-4xl font-bold text-primary tabular-nums">
+                      {String(unit.value).padStart(2, "0")}
+                    </span>
+                    <p className="text-xs text-muted-foreground mt-1">{unit.label}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-2">
+                <span className="text-2xl font-bold text-primary block">Aguardando Data Pública</span>
+                <p className="text-sm text-muted-foreground mt-2">O INEP ainda não divulgou o calendário oficial. Em breve atualizaremos sistema!</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

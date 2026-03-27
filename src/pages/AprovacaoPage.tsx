@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Target } from "lucide-react";
+import { Target, Info } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useClinicalQuestions } from "@/hooks/useClinicalQuestions";
 import QuestionTrainer from "@/components/QuestionTrainer";
@@ -36,6 +36,14 @@ export default function AprovacaoPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        {/* Observation text above filter buttons */}
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20 mb-3">
+          <Info className="h-4 w-4 text-primary flex-shrink-0" />
+          <p className="text-sm text-primary font-medium">
+            Selecione sua cadeira ou faça todas as perguntas em Geral
+          </p>
+        </div>
+
         <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-muted/50 p-1.5 rounded-lg">
           {specialtyTabs.map(tab => (
             <TabsTrigger

@@ -19,7 +19,7 @@ interface QuestionTrainerProps {
 
 export default function QuestionTrainer({ questions, isLoading, tabLabel }: QuestionTrainerProps) {
   const { data: answers = [] } = useUserAnswers();
-  const { stats, recordAnswer, ensureStats, resetProgress } = useUserStats();
+  const { stats, recordAnswer, ensureStats, resetXP, resetStreak, resetAccuracy, resetScore } = useUserStats();
   const weakPoints = useWeakPoints();
   const { checkedCount } = useChecklistProgress();
   const totalItems = getAllItems().length;
@@ -103,14 +103,45 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
     setSessionTotal(0);
   };
 
-  const handleResetAll = async () => {
-    if (!confirm("Tem certeza que deseja resetar todas as estatísticas e respostas? Esta ação não pode ser desfeita.")) return;
+  // Individual reset handlers
+  const handleResetXP = async () => {
+    if (!confirm("Tem certeza que deseja resetar o XP? Esta ação não pode ser desfeita.")) return;
     try {
-      await resetProgress.mutateAsync();
-      handleRestart();
-      toast.success("Estatísticas resetadas com sucesso!");
+      await resetXP.mutateAsync();
+      toast.success("XP resetado com sucesso!");
     } catch {
-      toast.error("Erro ao resetar estatísticas");
+      toast.error("Erro ao resetar XP");
+    }
+  };
+
+  const handleResetStreak = async () => {
+    if (!confirm("Tem certeza que deseja resetar a sequência de dias? Esta ação não pode ser desfeita.")) return;
+    try {
+      await resetStreak.mutateAsync();
+      toast.success("Sequência resetada com sucesso!");
+    } catch {
+      toast.error("Erro ao resetar sequência");
+    }
+  };
+
+  const handleResetAccuracy = async () => {
+    if (!confirm("Tem certeza que deseja resetar a taxa de acerto e todas as respostas? Esta ação não pode ser desfeita.")) return;
+    try {
+      await resetAccuracy.mutateAsync();
+      handleRestart();
+      toast.success("Taxa de acerto e respostas resetadas!");
+    } catch {
+      toast.error("Erro ao resetar taxa de acerto");
+    }
+  };
+
+  const handleResetScore = async () => {
+    if (!confirm("Tem certeza que deseja resetar o ENAMED Score? Esta ação não pode ser desfeita.")) return;
+    try {
+      await resetScore.mutateAsync();
+      toast.success("ENAMED Score resetado com sucesso!");
+    } catch {
+      toast.error("Erro ao resetar score");
     }
   };
 
@@ -130,19 +161,23 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
 
   return (
     <div className="space-y-6">
-      {/* Reset button */}
-      <div className="flex justify-end">
-        <Button variant="destructive" size="sm" onClick={handleResetAll} disabled={resetProgress.isPending}>
-          <Trash2 className="mr-2 h-4 w-4" /> Resetar Estatísticas
-        </Button>
-      </div>
-      {/* Stats bar */}
+      {/* Stats bar with individual reset buttons */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="border-0 shadow-sm">
           <CardContent className="pt-4 pb-3 text-center">
             <div className="text-2xl font-bold text-primary">{level.emoji} {level.label}</div>
             <p className="text-xs text-muted-foreground">{xp} XP</p>
             <Progress value={nextLevel ? ((xp - level.minXP) / (level.maxXP - level.minXP + 1)) * 100 : 100} className="h-1.5 mt-2" />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleResetXP}
+              disabled={resetXP.isPending}
+              className="mt-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 h-7 px-2"
+              title="Resetar XP"
+            >
+              <Trash2 className="h-3 w-3 mr-1" /> Resetar
+            </Button>
           </CardContent>
         </Card>
         <Card className="border-0 shadow-sm">
@@ -152,18 +187,48 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
               <span className="text-2xl font-bold">{streak}</span>
             </div>
             <p className="text-xs text-muted-foreground">Dias seguidos</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleResetStreak}
+              disabled={resetStreak.isPending}
+              className="mt-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 h-7 px-2"
+              title="Resetar Sequência"
+            >
+              <Trash2 className="h-3 w-3 mr-1" /> Resetar
+            </Button>
           </CardContent>
         </Card>
         <Card className="border-0 shadow-sm">
           <CardContent className="pt-4 pb-3 text-center">
             <div className="text-2xl font-bold text-success">{Math.round(accuracy * 100)}%</div>
             <p className="text-xs text-muted-foreground">Taxa de acerto</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleResetAccuracy}
+              disabled={resetAccuracy.isPending}
+              className="mt-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 h-7 px-2"
+              title="Resetar Taxa de Acerto"
+            >
+              <Trash2 className="h-3 w-3 mr-1" /> Resetar
+            </Button>
           </CardContent>
         </Card>
         <Card className="border-0 shadow-sm">
           <CardContent className="pt-4 pb-3 text-center">
             <div className="text-2xl font-bold text-accent">{enamedScore}</div>
             <p className="text-xs text-muted-foreground">ENAMED Score — {scoreLevel.label}</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleResetScore}
+              disabled={resetScore.isPending}
+              className="mt-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 h-7 px-2"
+              title="Resetar ENAMED Score"
+            >
+              <Trash2 className="h-3 w-3 mr-1" /> Resetar
+            </Button>
           </CardContent>
         </Card>
       </div>

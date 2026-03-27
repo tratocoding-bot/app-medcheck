@@ -34,9 +34,11 @@ export default function DashboardPage() {
 
   const nextCritical = dates.find((d) => d.is_critical && d.status !== "done");
 
-  const examDate = new Date(2026, 8, 13);
   const now = new Date();
-  const daysToExam = Math.max(0, Math.ceil((examDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+  
+  // Como não há data oficial para 2026 ainda, definimos dias para exame apenas visualmente como pendente
+  const hasOfficialDate = false;
+  const daysToExam = 0;
 
   // ENAMED Score
   const accuracy = (stats?.questions_answered ?? 0) > 0
@@ -72,11 +74,11 @@ export default function DashboardPage() {
 
   // Performance alert
   const performanceAlert = useMemo(() => {
-    if (daysToExam < 180 && progressPercent < 30) return "Você está atrasado no cronograma. Intensifique seus estudos!";
-    if (daysToExam < 90 && progressPercent < 60) return "Seu ritmo atual pode não ser suficiente para aprovação.";
+    if (hasOfficialDate && daysToExam < 180 && progressPercent < 30) return "Você está atrasado no cronograma. Intensifique seus estudos!";
+    if (hasOfficialDate && daysToExam < 90 && progressPercent < 60) return "Seu ritmo atual pode não ser suficiente para aprovação.";
     if ((stats?.streak ?? 0) === 0 && (stats?.questions_answered ?? 0) > 0) return "Você perdeu sua sequência. Retome hoje!";
     return null;
-  }, [daysToExam, progressPercent, stats]);
+  }, [daysToExam, progressPercent, stats, hasOfficialDate]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -120,25 +122,14 @@ export default function DashboardPage() {
         <Card className="border-0 shadow-md">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Clock className="h-4 w-4 text-primary" /> Contagem Regressiva
+              <Clock className="h-4 w-4 text-primary" /> Data da Prova
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center">
-              <span className="text-3xl font-bold text-primary">{daysToExam}</span>
-              <p className="text-xs text-muted-foreground mt-1">dias para a prova</p>
+            <div className="text-center pt-2">
+              <span className="text-sm font-bold text-muted-foreground">Sem data pública ainda</span>
+              <p className="text-[10px] text-primary mt-1">Em breve atualiza</p>
             </div>
-            {nextCritical && (
-              <div className="mt-3 p-2 rounded-lg bg-primary/5 border border-primary/20">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-3 w-3 text-primary flex-shrink-0" />
-                  <div>
-                    <p className="text-[11px] font-medium">{nextCritical.event_name}</p>
-                    <p className="text-[10px] text-muted-foreground">{nextCritical.event_date}</p>
-                  </div>
-                </div>
-              </div>
-            )}
           </CardContent>
         </Card>
 
@@ -257,11 +248,6 @@ export default function DashboardPage() {
                     : "Continue marcando itens no checklist"}
               </p>
             </div>
-            <Link to={weakPoints.length > 0 ? "/aprovacao" : "/checklist"}>
-              <Button variant="outline" size="sm" className="w-full mt-3">
-                Ir agora →
-              </Button>
-            </Link>
           </CardContent>
         </Card>
       </div>

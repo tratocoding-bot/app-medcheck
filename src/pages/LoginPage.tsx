@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Stethoscope, LogIn, Sun, Moon, Users, TrendingUp } from "lucide-react";
+import { LogIn, Sun, Moon, Users, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -74,9 +75,18 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-4">
         <Card className="shadow-lg border-0 bg-card">
           <CardHeader className="text-center pb-2">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Stethoscope className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold text-primary">ENAMED Check</span>
+            {/* Logo icon */}
+            <div className="flex flex-col items-center gap-3 mb-4">
+              <img
+                src="/enamed-icon.png"
+                alt="ENAMED Check Icon"
+                className="h-20 w-20 object-contain drop-shadow-md"
+              />
+              <img
+                src="/enamed-logo.png"
+                alt="ENAMED Check"
+                className="h-12 object-contain"
+              />
             </div>
             <CardTitle className="text-xl">Bem-vindo de volta</CardTitle>
             <CardDescription>Entre com sua conta para continuar</CardDescription>
@@ -122,6 +132,9 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      {/* WhatsApp floating button */}
+      <WhatsAppButton />
     </div>
   );
 }

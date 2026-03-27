@@ -91,7 +91,71 @@ export function useUserStats() {
     },
   });
 
-  return { stats, isLoading, recordAnswer, ensureStats, resetProgress };
+  // Individual stat reset mutations
+  const resetXP = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      const { error } = await supabase
+        .from("user_stats")
+        .update({ xp: 0, clinical_level: "interno" })
+        .eq("user_id", user.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
+    },
+  });
+
+  const resetStreak = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      const { error } = await supabase
+        .from("user_stats")
+        .update({ streak: 0 })
+        .eq("user_id", user.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
+    },
+  });
+
+  const resetAccuracy = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      // Delete all answers and reset counts
+      const { error: delError } = await supabase
+        .from("user_answers")
+        .delete()
+        .eq("user_id", user.id);
+      if (delError) throw delError;
+      const { error } = await supabase
+        .from("user_stats")
+        .update({ questions_answered: 0, questions_correct: 0, enamed_score: 0 })
+        .eq("user_id", user.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["user-answers", user?.id] });
+    },
+  });
+
+  const resetScore = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      const { error } = await supabase
+        .from("user_stats")
+        .update({ enamed_score: 0 })
+        .eq("user_id", user.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
+    },
+  });
+
+  return { stats, isLoading, recordAnswer, ensureStats, resetProgress, resetXP, resetStreak, resetAccuracy, resetScore };
 }
 
 export function useUserAnswers() {
