@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { Info } from "lucide-react";
 import { useClinicalQuestions } from "@/hooks/useClinicalQuestions";
 import QuestionTrainer from "@/components/QuestionTrainer";
-import { themeInfo } from "@/data/clinicalQuestions";
 
 export default function AreaPraticaPage() {
   const { area } = useParams<{ area: string }>();
