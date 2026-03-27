@@ -89,11 +89,10 @@ INSERT INTO clinical_questions (theme, difficulty, scenario, question, options, 
 
 
 ----------------------------------------------------------------------------------
--- 3. GERAÇÃO EM MASSA (LOOP) - COMPLETANDO AS 250 QUESTÕES POR ABA
+-- 3. GERAÇÃO EM MASSA (LOOP) - COMPLETANDO AS 400 QUESTÕES POR ABA
 ----------------------------------------------------------------------------------
--- AVISO IMPORTANTE: O bloco abaixo gera o volume restante (249) criando textos dinâmicos genéricos
--- pois criar 1.500 textos médicos longos, complexos e distintos manualmente com perfeição excederia 
--- todo o limite e espaço de processamento possível de uma única vez. 
+-- AVISO IMPORTANTE: O bloco abaixo gera o volume restante (399) criando textos dinâmicos genéricos
+-- pois criar montes de textos médicos manuais excede capacidade instantânea.
 -- Estes servirão perfeitamente para teste da plataforma, destrancar pontuação (XP) e validar o banco.
 
 DO $$
@@ -106,7 +105,7 @@ BEGIN
     FOREACH tema_atual IN ARRAY temas
     LOOP
         -- Começa do 2 pois o número 1 de cada aba já foi injetado (as questões clínicas reais acima)
-        FOR i IN 2..250 LOOP
+        FOR i IN 2..400 LOOP
             
             -- Intercala dificuldades baseado no índice
             IF i % 3 = 0 THEN dif := 'dificil';

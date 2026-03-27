@@ -5,14 +5,14 @@ import { useClinicalQuestions } from "@/hooks/useClinicalQuestions";
 import QuestionTrainer from "@/components/QuestionTrainer";
 
 const specialtyTabs = [
-  { key: "geral", label: "Geral", themes: null }, // null = all questions
-  { key: "clinica_medica", label: "Clínica Médica", themes: ["clinica_medica", "cardiologia", "pneumologia", "nefrologia", "endocrinologia", "reumatologia", "gastroenterologia", "infectologia"] },
-  { key: "cirurgia", label: "Cirurgia Geral", themes: ["cirurgia", "urgencia"] },
-  { key: "ginecologia", label: "Ginecologia e Obstetrícia", themes: ["ginecologia"] },
-  { key: "pediatria", label: "Pediatria", themes: ["pediatria"] },
-  { key: "medicina_familia", label: "Med. Família", themes: ["medicina_familia", "etica"] },
-  { key: "saude_coletiva", label: "Saúde Coletiva", themes: ["saude_coletiva"] },
-  { key: "saude_mental", label: "Saúde Mental", themes: ["saude_mental"] },
+  { key: "geral", label: "Geral", themes: null, colorClass: "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary" },
+  { key: "clinica_medica", label: "Clínica Médica", themes: ["clinica_medica", "cardiologia", "pneumologia", "nefrologia", "endocrinologia", "reumatologia", "gastroenterologia", "infectologia"], colorClass: "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:border-blue-600 dark:data-[state=active]:bg-blue-500" },
+  { key: "cirurgia", label: "Cirurgia Geral", themes: ["cirurgia", "urgencia"], colorClass: "data-[state=active]:bg-orange-600 data-[state=active]:text-white data-[state=active]:border-orange-600 dark:data-[state=active]:bg-orange-500" },
+  { key: "ginecologia", label: "Ginecologia e Obstetrícia", themes: ["ginecologia"], colorClass: "data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:border-pink-600 dark:data-[state=active]:bg-pink-500" },
+  { key: "pediatria", label: "Pediatria", themes: ["pediatria"], colorClass: "data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=active]:border-purple-600 dark:data-[state=active]:bg-purple-500" },
+  { key: "medicina_familia", label: "Med. Família", themes: ["medicina_familia", "etica"], colorClass: "data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:border-emerald-600 dark:data-[state=active]:bg-emerald-500" },
+  { key: "saude_coletiva", label: "Saúde Coletiva", themes: ["saude_coletiva"], colorClass: "data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:border-cyan-600 dark:data-[state=active]:bg-cyan-500" },
+  { key: "saude_mental", label: "Saúde Mental", themes: ["saude_mental"], colorClass: "data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:border-indigo-600 dark:data-[state=active]:bg-indigo-500" },
 ];
 
 export default function AprovacaoPage() {
@@ -44,12 +44,12 @@ export default function AprovacaoPage() {
           </p>
         </div>
 
-        <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-muted/50 p-1.5 rounded-lg">
+        <TabsList className="w-full flex flex-wrap justify-start h-auto gap-2 bg-transparent p-0 mb-4">
           {specialtyTabs.map(tab => (
             <TabsTrigger
               key={tab.key}
               value={tab.key}
-              className="text-xs sm:text-sm px-2 sm:px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className={`text-xs sm:text-sm px-4 py-2 rounded-full border bg-card hover:bg-muted/50 transition-all shadow-sm data-[state=active]:shadow-md ${tab.colorClass}`}
             >
               {tab.label}
             </TabsTrigger>
