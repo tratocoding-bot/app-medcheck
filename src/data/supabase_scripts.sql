@@ -55,7 +55,7 @@ INSERT INTO clinical_questions (theme, difficulty, scenario, question, options, 
 ]'::jsonb, 'A tríade de tosse metálica (cachorro), rouquidão e estridor noturno em pré-escolar é clássica do Crupe viral. Casos leves a moderados são tratados com dose única de corticoide (ex: dexametasona).', 1);
 
 -- Med. Família
-INSERT INTO clinical_questions (theme, difficulty, scenario, question, options, recurrences, explanation, display_order) VALUES 
+INSERT INTO clinical_questions (theme, difficulty, scenario, question, options, explanation, display_order) VALUES 
 ('medicina_familia', 'media', 'Paciente homem, 55 anos, negro, recém diagnosticado com hipertensão arterial sistêmica (HAS) em 150/95 mmHg nas consultas da UBS. Sem comorbidades ou lesão de órgão-alvo.', 'Segundo as diretrizes de HAS, qual a classe de medicação de primeira linha preferencial para este perfil fenotípico?', 
 '[
   {"text": "Betabloqueadores", "is_correct": false},
@@ -63,7 +63,7 @@ INSERT INTO clinical_questions (theme, difficulty, scenario, question, options, 
   {"text": "Bloqueadores dos Canais de Cálcio ou Diuréticos Tiazídicos", "is_correct": true},
   {"text": "Vasodilatadores diretos", "is_correct": false},
   {"text": "Diuréticos de alça", "is_correct": false}
-]'::jsonb, '["has"]', 'Populações afrodescendentes possuem, frequentemente, hipertensão com renina baixa. Por isso, as diretrizes (brasileiras e internacionais) apontam BCC ou Tiazídicos como drogas de escolha monoterápica inicial para esse grupo, alcançando controle pressórico superior aos IECAs / BRAs.', 1);
+]'::jsonb, 'Populações afrodescendentes possuem, frequentemente, hipertensão com renina baixa. Por isso, as diretrizes (brasileiras e internacionais) apontam BCC ou Tiazídicos como drogas de escolha monoterápica inicial para esse grupo, alcançando controle pressórico superior aos IECAs / BRAs.', 1);
 
 -- Saúde Coletiva
 INSERT INTO clinical_questions (theme, difficulty, scenario, question, options, explanation, display_order) VALUES 

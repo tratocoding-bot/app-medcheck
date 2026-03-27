@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope, HeartPulse, Hospital, Baby, Users, Brain, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
@@ -12,9 +12,19 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/checklist", label: "Checklist", icon: CheckSquare },
-  { to: "/aprovacao", label: "Aprovação Geral", icon: Target },
+  { to: "/aprovacao", label: "PER. GERAIS", icon: Target },
   { to: "/cronograma", label: "Cronograma", icon: Calendar },
   { to: "/perfil", label: "Perfil", icon: User },
+];
+
+const practiceAreas = [
+  { to: "/pratica/clinica_medica", label: "Clínica Médica", icon: Stethoscope },
+  { to: "/pratica/cirurgia", label: "Cirurgia Geral", icon: Activity },
+  { to: "/pratica/ginecologia", label: "Gineco e Obs.", icon: HeartPulse },
+  { to: "/pratica/pediatria", label: "Pediatria", icon: Baby },
+  { to: "/pratica/medicina_familia", label: "Med. Família", icon: Users },
+  { to: "/pratica/saude_coletiva", label: "Saúde Coletiva", icon: Hospital },
+  { to: "/pratica/saude_mental", label: "Saúde Mental", icon: Brain },
 ];
 
 function perfilLabel(perfil: string | null) {
@@ -114,6 +124,25 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               </Link>
             );
           })}
+          
+          <div className="mt-4 mb-1 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Especialidades
+          </div>
+          {practiceAreas.map((item) => {
+            const active = location.pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })}
           {isAdmin && (
             <Link
               to="/admin/datas"
@@ -182,6 +211,22 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <span className="font-medium">{item.label}</span>
               </Link>
             ))}
+
+            <div className="mt-4 mb-2 px-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+              Especialidades
+            </div>
+            {practiceAreas.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-foreground hover:bg-secondary transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <item.icon className="h-5 w-5" />
+                <span className="font-medium">{item.label}</span>
+              </Link>
+            ))}
+            
             {isAdmin && (
               <Link
                 to="/admin/datas"
