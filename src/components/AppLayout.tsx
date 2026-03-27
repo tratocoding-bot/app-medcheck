@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
@@ -56,7 +56,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <img src="/enamed-icon.png" alt="ENAMED Check" className="h-8 w-8 object-contain drop-shadow-sm" />
+            <Stethoscope className="h-6 w-6 text-primary" />
+            <span className="font-bold text-primary text-lg hidden sm:inline">ENAMED Check</span>
           </Link>
 
           <div className="flex-1 max-w-xs mx-4 hidden sm:block">

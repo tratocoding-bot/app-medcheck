@@ -60,15 +60,9 @@ export default function CadastroPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md shadow-lg border-0 bg-card">
         <CardHeader className="text-center pb-2">
-          {/* Logo */}
-          <div className="flex justify-center mb-6 mt-2">
-            <div className="bg-white/80 p-2 rounded-xl backdrop-blur-sm shadow-sm inline-block">
-              <img
-                src="/enamed-logo.png"
-                alt="ENAMED Check"
-                className="h-16 md:h-20 object-contain drop-shadow-sm"
-              />
-            </div>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Stethoscope className="h-8 w-8 text-primary" />
+            <span className="text-2xl font-bold text-primary">ENAMED Check</span>
           </div>
           <CardTitle className="text-xl">Criar Conta</CardTitle>
           <CardDescription>Cadastre-se para acompanhar seu progresso</CardDescription>
