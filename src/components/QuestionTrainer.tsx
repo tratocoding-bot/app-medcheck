@@ -60,31 +60,35 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
 
   const currentQuestion = questions[currentIndex];
 
+  const [answerResult, setAnswerResult] = useState<{ correct_option: number; explanation: string | null } | null>(null);
+
   const handleAnswer = async (optionIndex: number) => {
     if (showResult || !currentQuestion) return;
     setSelectedOption(optionIndex);
     setShowResult(true);
 
-    const options = currentQuestion.options as any[];
-    const isCorrect = options[optionIndex]?.is_correct === true;
+    try {
+      const result = await recordAnswer.mutateAsync({
+        questionId: currentQuestion.id,
+        selectedOption: optionIndex,
+      });
 
-    setSessionTotal(prev => prev + 1);
-    if (isCorrect) {
-      setSessionCorrect(prev => prev + 1);
-      toast.success("+15 XP! ✓ Resposta correta", { duration: 2000 });
-      if ((sessionCorrect + 1) % 5 === 0) {
-        confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+      setAnswerResult({ correct_option: result.correct_option, explanation: result.explanation });
+      setSessionTotal(prev => prev + 1);
+      if (result.is_correct) {
+        setSessionCorrect(prev => prev + 1);
+        toast.success("+15 XP! ✓ Resposta correta", { duration: 2000 });
+        if ((sessionCorrect + 1) % 5 === 0) {
+          confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+        }
+      } else {
+        toast.error("+3 XP — Revise esta área", { duration: 2000 });
       }
-    } else {
-      toast.error("+3 XP — Revise esta área", { duration: 2000 });
+    } catch {
+      toast.error("Erro ao enviar resposta");
+      setShowResult(false);
+      setSelectedOption(null);
     }
-
-    await recordAnswer.mutateAsync({
-      questionId: currentQuestion.id,
-      selectedOption: optionIndex,
-      isCorrect,
-      theme: currentQuestion.theme,
-    });
   };
 
   const handleNext = () => {
