@@ -94,6 +94,7 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
   const handleNext = () => {
     setSelectedOption(null);
     setShowResult(false);
+    setAnswerResult(null);
     if (currentIndex < Math.min(questions.length - 1, unlockedCount - 1)) {
       setCurrentIndex(prev => prev + 1);
     }
