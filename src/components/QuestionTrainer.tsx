@@ -104,6 +104,7 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
     setCurrentIndex(0);
     setSelectedOption(null);
     setShowResult(false);
+    setAnswerResult(null);
     setSessionCorrect(0);
     setSessionTotal(0);
   };
