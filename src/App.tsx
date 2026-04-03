@@ -56,6 +56,7 @@ const App = () => (
             <Route path="/pratica/:area" element={<ProtectedRoute><AreaPraticaPage /></ProtectedRoute>} />
             <Route path="/cronograma" element={<ProtectedRoute><CronogramaPage /></ProtectedRoute>} />
             <Route path="/perfil" element={<ProtectedRoute><PerfilPage /></ProtectedRoute>} />
+            <Route path="/simulado" element={<ProtectedRoute><SimuladoPage /></ProtectedRoute>} />
             <Route path="/admin/datas" element={<ProtectedRoute><AdminRoute><AdminDatasPage /></AdminRoute></ProtectedRoute>} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="*" element={<NotFound />} />

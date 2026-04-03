@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope, HeartPulse, Hospital, Baby, Users, Brain, Activity } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope, HeartPulse, Hospital, Baby, Users, Brain, Activity, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
