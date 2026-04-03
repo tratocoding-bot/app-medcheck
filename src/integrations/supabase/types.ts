@@ -270,12 +270,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_clinical_questions: {
+        Args: never
+        Returns: {
+          created_at: string
+          difficulty: string
+          display_order: number
+          explanation: string
+          id: string
+          options: Json
+          question: string
+          scenario: string
+          theme: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      reset_user_stats: { Args: { p_reset_type: string }; Returns: undefined }
+      submit_answer: {
+        Args: { p_question_id: string; p_selected_option: number }
+        Returns: Json
       }
     }
     Enums: {
