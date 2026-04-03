@@ -5,12 +5,9 @@ export function useClinicalQuestions() {
   return useQuery({
     queryKey: ["clinical-questions"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("clinical_questions")
-        .select("*")
-        .order("display_order", { ascending: true });
+      const { data, error } = await supabase.rpc("get_clinical_questions");
       if (error) throw error;
-      return data ?? [];
+      return (data as any[]) ?? [];
     },
   });
 }
