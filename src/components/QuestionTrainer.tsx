@@ -305,10 +305,10 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
                   );
                 })}
 
-                {showResult && currentQuestion.explanation && (
+                {showResult && answerResult?.explanation && (
                   <div className="mt-4 p-4 rounded-lg bg-accent/10 border border-accent/20">
                     <p className="text-sm font-medium text-accent mb-1">💡 Explicação</p>
-                    <p className="text-sm text-muted-foreground">{currentQuestion.explanation}</p>
+                    <p className="text-sm text-muted-foreground">{answerResult.explanation}</p>
                   </div>
                 )}
 
