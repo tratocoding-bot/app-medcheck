@@ -13,6 +13,7 @@ const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/checklist", label: "Checklist", icon: CheckSquare },
   { to: "/cronograma", label: "Cronograma", icon: Calendar },
+  { to: "/simulado", label: "Simulado Oficial", icon: Shield, highlight: true },
   { to: "/perfil", label: "Perfil", icon: User },
 ];
 
