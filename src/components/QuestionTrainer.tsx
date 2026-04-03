@@ -283,11 +283,11 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
                 <p className="font-medium">{currentQuestion.question}</p>
 
                 {(currentQuestion.options as any[]).map((opt: any, idx: number) => {
-                  const isCorrectOption = opt.is_correct;
+                  const isCorrectOption = answerResult ? idx === answerResult.correct_option : false;
                   const isSelected = selectedOption === idx;
                   let optionClass = "border p-3 rounded-lg cursor-pointer transition-all text-sm text-left w-full flex items-start gap-2";
 
-                  if (showResult) {
+                  if (showResult && answerResult) {
                     if (isCorrectOption) optionClass += " border-success bg-success/10 text-success";
                     else if (isSelected) optionClass += " border-destructive bg-destructive/10 text-destructive";
                     else optionClass += " opacity-50 border-border";
@@ -299,8 +299,8 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
                     <button key={idx} className={optionClass} onClick={() => handleAnswer(idx)} disabled={showResult}>
                       <span className="font-medium shrink-0 w-6">{String.fromCharCode(65 + idx)}.</span>
                       <span>{opt.text}</span>
-                      {showResult && isCorrectOption && <CheckCircle2 className="h-4 w-4 shrink-0 ml-auto mt-0.5" />}
-                      {showResult && isSelected && !isCorrectOption && <XCircle className="h-4 w-4 shrink-0 ml-auto mt-0.5" />}
+                      {showResult && answerResult && isCorrectOption && <CheckCircle2 className="h-4 w-4 shrink-0 ml-auto mt-0.5" />}
+                      {showResult && answerResult && isSelected && !isCorrectOption && <XCircle className="h-4 w-4 shrink-0 ml-auto mt-0.5" />}
                     </button>
                   );
                 })}
