@@ -37,6 +37,7 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
     setCurrentIndex(0);
     setSelectedOption(null);
     setShowResult(false);
+    setAnswerResult(null);
     setSessionCorrect(0);
     setSessionTotal(0);
   }, [tabLabel]);
@@ -60,36 +61,41 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
 
   const currentQuestion = questions[currentIndex];
 
+  const [answerResult, setAnswerResult] = useState<{ correct_option: number; explanation: string | null } | null>(null);
+
   const handleAnswer = async (optionIndex: number) => {
     if (showResult || !currentQuestion) return;
     setSelectedOption(optionIndex);
     setShowResult(true);
 
-    const options = currentQuestion.options as any[];
-    const isCorrect = options[optionIndex]?.is_correct === true;
+    try {
+      const result = await recordAnswer.mutateAsync({
+        questionId: currentQuestion.id,
+        selectedOption: optionIndex,
+      });
 
-    setSessionTotal(prev => prev + 1);
-    if (isCorrect) {
-      setSessionCorrect(prev => prev + 1);
-      toast.success("+15 XP! ✓ Resposta correta", { duration: 2000 });
-      if ((sessionCorrect + 1) % 5 === 0) {
-        confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+      setAnswerResult({ correct_option: result.correct_option, explanation: result.explanation });
+      setSessionTotal(prev => prev + 1);
+      if (result.is_correct) {
+        setSessionCorrect(prev => prev + 1);
+        toast.success("+15 XP! ✓ Resposta correta", { duration: 2000 });
+        if ((sessionCorrect + 1) % 5 === 0) {
+          confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+        }
+      } else {
+        toast.error("+3 XP — Revise esta área", { duration: 2000 });
       }
-    } else {
-      toast.error("+3 XP — Revise esta área", { duration: 2000 });
+    } catch {
+      toast.error("Erro ao enviar resposta");
+      setShowResult(false);
+      setSelectedOption(null);
     }
-
-    await recordAnswer.mutateAsync({
-      questionId: currentQuestion.id,
-      selectedOption: optionIndex,
-      isCorrect,
-      theme: currentQuestion.theme,
-    });
   };
 
   const handleNext = () => {
     setSelectedOption(null);
     setShowResult(false);
+    setAnswerResult(null);
     if (currentIndex < Math.min(questions.length - 1, unlockedCount - 1)) {
       setCurrentIndex(prev => prev + 1);
     }
@@ -99,6 +105,7 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
     setCurrentIndex(0);
     setSelectedOption(null);
     setShowResult(false);
+    setAnswerResult(null);
     setSessionCorrect(0);
     setSessionTotal(0);
   };
@@ -277,11 +284,11 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
                 <p className="font-medium">{currentQuestion.question}</p>
 
                 {(currentQuestion.options as any[]).map((opt: any, idx: number) => {
-                  const isCorrectOption = opt.is_correct;
+                  const isCorrectOption = answerResult ? idx === answerResult.correct_option : false;
                   const isSelected = selectedOption === idx;
                   let optionClass = "border p-3 rounded-lg cursor-pointer transition-all text-sm text-left w-full flex items-start gap-2";
 
-                  if (showResult) {
+                  if (showResult && answerResult) {
                     if (isCorrectOption) optionClass += " border-success bg-success/10 text-success";
                     else if (isSelected) optionClass += " border-destructive bg-destructive/10 text-destructive";
                     else optionClass += " opacity-50 border-border";
@@ -293,16 +300,16 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
                     <button key={idx} className={optionClass} onClick={() => handleAnswer(idx)} disabled={showResult}>
                       <span className="font-medium shrink-0 w-6">{String.fromCharCode(65 + idx)}.</span>
                       <span>{opt.text}</span>
-                      {showResult && isCorrectOption && <CheckCircle2 className="h-4 w-4 shrink-0 ml-auto mt-0.5" />}
-                      {showResult && isSelected && !isCorrectOption && <XCircle className="h-4 w-4 shrink-0 ml-auto mt-0.5" />}
+                      {showResult && answerResult && isCorrectOption && <CheckCircle2 className="h-4 w-4 shrink-0 ml-auto mt-0.5" />}
+                      {showResult && answerResult && isSelected && !isCorrectOption && <XCircle className="h-4 w-4 shrink-0 ml-auto mt-0.5" />}
                     </button>
                   );
                 })}
 
-                {showResult && currentQuestion.explanation && (
+                {showResult && answerResult?.explanation && (
                   <div className="mt-4 p-4 rounded-lg bg-accent/10 border border-accent/20">
                     <p className="text-sm font-medium text-accent mb-1">💡 Explicação</p>
-                    <p className="text-sm text-muted-foreground">{currentQuestion.explanation}</p>
+                    <p className="text-sm text-muted-foreground">{answerResult.explanation}</p>
                   </div>
                 )}
 

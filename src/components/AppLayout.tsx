@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope, HeartPulse, Hospital, Baby, Users, Brain, Activity } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope, HeartPulse, Hospital, Baby, Users, Brain, Activity, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
@@ -13,6 +13,7 @@ const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/checklist", label: "Checklist", icon: CheckSquare },
   { to: "/cronograma", label: "Cronograma", icon: Calendar },
+  { to: "/simulado", label: "Simulado Oficial", icon: Shield, highlight: true },
   { to: "/perfil", label: "Perfil", icon: User },
 ];
 
@@ -110,16 +111,20 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <aside className="hidden md:flex w-56 flex-col border-r bg-card p-4 gap-1">
           {navItems.map((item) => {
             const active = location.pathname === item.to;
+            const isHighlight = (item as any).highlight;
             return (
               <Link
                 key={item.to}
                 to={item.to}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  active ? "bg-primary/10 text-primary" :
+                  isHighlight ? "text-destructive font-bold hover:bg-destructive/10" :
+                  "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
               >
-                <item.icon className="h-4 w-4" />
+                <item.icon className={`h-4 w-4 ${isHighlight && !active ? "text-destructive" : ""}`} />
                 {item.label}
+                {isHighlight && <span className="ml-auto text-[10px] bg-destructive text-destructive-foreground px-1.5 py-0.5 rounded-full">🔥</span>}
               </Link>
             );
           })}

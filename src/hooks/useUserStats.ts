@@ -38,22 +38,17 @@ export function useUserStats() {
   };
 
   const recordAnswer = useMutation({
-    mutationFn: async ({ questionId, selectedOption, isCorrect, theme }: {
+    mutationFn: async ({ questionId, selectedOption }: {
       questionId: string;
       selectedOption: number;
-      isCorrect: boolean;
-      theme: string;
     }) => {
       if (!user) throw new Error("Not authenticated");
-
-      // Insert answer — server-side triggers validate correctness and update stats
-      const { error } = await supabase.from("user_answers").insert({
-        user_id: user.id,
-        question_id: questionId,
-        selected_option: selectedOption,
-        is_correct: isCorrect, // Will be overridden server-side by trigger
+      const { data, error } = await supabase.rpc("submit_answer", {
+        p_question_id: questionId,
+        p_selected_option: selectedOption,
       });
       if (error) throw error;
+      return data as { is_correct: boolean; correct_option: number; explanation: string | null };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
@@ -61,98 +56,54 @@ export function useUserStats() {
     },
   });
 
-  const resetProgress = useMutation({
-    mutationFn: async () => {
-      if (!user) throw new Error("Not authenticated");
-      // Delete all user answers
-      const { error: delError } = await supabase
-        .from("user_answers")
-        .delete()
-        .eq("user_id", user.id);
-      if (delError) throw delError;
-      // Reset stats to zero
-      const { error: updError } = await supabase
-        .from("user_stats")
-        .update({
-          xp: 0,
-          streak: 0,
-          questions_answered: 0,
-          questions_correct: 0,
-          enamed_score: 0,
-          clinical_level: "interno",
-          last_active_date: null,
-        })
-        .eq("user_id", user.id);
-      if (updError) throw updError;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
-      queryClient.invalidateQueries({ queryKey: ["user-answers", user?.id] });
-    },
-  });
+  const invalidateAll = () => {
+    queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
+    queryClient.invalidateQueries({ queryKey: ["user-answers", user?.id] });
+  };
 
-  // Individual stat reset mutations
   const resetXP = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase
-        .from("user_stats")
-        .update({ xp: 0, clinical_level: "interno" })
-        .eq("user_id", user.id);
+      const { error } = await supabase.rpc("reset_user_stats", { p_reset_type: "xp" });
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
-    },
+    onSuccess: invalidateAll,
   });
 
   const resetStreak = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase
-        .from("user_stats")
-        .update({ streak: 0 })
-        .eq("user_id", user.id);
+      const { error } = await supabase.rpc("reset_user_stats", { p_reset_type: "streak" });
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
-    },
+    onSuccess: invalidateAll,
   });
 
   const resetAccuracy = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
-      // Delete all answers and reset counts
-      const { error: delError } = await supabase
-        .from("user_answers")
-        .delete()
-        .eq("user_id", user.id);
-      if (delError) throw delError;
-      const { error } = await supabase
-        .from("user_stats")
-        .update({ questions_answered: 0, questions_correct: 0, enamed_score: 0 })
-        .eq("user_id", user.id);
+      const { error } = await supabase.rpc("reset_user_stats", { p_reset_type: "accuracy" });
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
-      queryClient.invalidateQueries({ queryKey: ["user-answers", user?.id] });
-    },
+    onSuccess: invalidateAll,
   });
 
   const resetScore = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase
-        .from("user_stats")
-        .update({ enamed_score: 0 })
-        .eq("user_id", user.id);
+      const { error } = await supabase.rpc("reset_user_stats", { p_reset_type: "score" });
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-stats", user?.id] });
+    onSuccess: invalidateAll,
+  });
+
+  const resetProgress = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Not authenticated");
+      const { error } = await supabase.rpc("reset_user_stats", { p_reset_type: "all" });
+      if (error) throw error;
     },
+    onSuccess: invalidateAll,
   });
 
   return { stats, isLoading, recordAnswer, ensureStats, resetProgress, resetXP, resetStreak, resetAccuracy, resetScore };
