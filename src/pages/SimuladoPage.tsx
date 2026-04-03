@@ -242,10 +242,21 @@ export default function SimuladoPage() {
                 );
               })}
 
-              {showResult && answerResult?.explanation && (
-                <div className="mt-4 p-4 rounded-lg bg-accent/10 border border-accent/20">
-                  <p className="text-sm font-medium text-accent mb-1">💡 Explicação</p>
-                  <p className="text-sm text-muted-foreground">{answerResult.explanation}</p>
+              {showResult && answerResult && (
+                <div className="mt-4 p-4 rounded-lg bg-accent/10 border border-accent/20 space-y-2">
+                  <p className="text-sm font-medium text-accent">💡 Explicação</p>
+                  <div className="flex items-start gap-2 p-2 rounded-md bg-success/10 border border-success/20">
+                    <CheckCircle2 className="h-4 w-4 text-success shrink-0 mt-0.5" />
+                    <p className="text-sm font-medium text-success">
+                      Resposta correta: {String.fromCharCode(65 + answerResult.correct_option)}. {(currentQuestion.options as any[])[answerResult.correct_option]?.text}
+                    </p>
+                  </div>
+                  {answerResult.explanation && (
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-foreground">Por que esta é a resposta certa?</p>
+                      <p className="text-sm text-muted-foreground">{answerResult.explanation}</p>
+                    </div>
+                  )}
                 </div>
               )}
 
