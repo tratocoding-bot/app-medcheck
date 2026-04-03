@@ -173,6 +173,126 @@ export type Database = {
         }
         Relationships: []
       }
+      simulado_answers: {
+        Row: {
+          answered_at: string | null
+          id: string
+          is_correct: boolean
+          question_id: string
+          selected_option: number
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          answered_at?: string | null
+          id?: string
+          is_correct: boolean
+          question_id: string
+          selected_option: number
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          answered_at?: string | null
+          id?: string
+          is_correct?: boolean
+          question_id?: string
+          selected_option?: number
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "simulado_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "simulado_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "simulado_answers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "simulado_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      simulado_questions: {
+        Row: {
+          created_at: string | null
+          difficulty: string | null
+          display_order: number | null
+          explanation: string | null
+          id: string
+          level: number
+          options: Json
+          question: string
+          scenario: string
+          theme: string
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty?: string | null
+          display_order?: number | null
+          explanation?: string | null
+          id?: string
+          level: number
+          options: Json
+          question: string
+          scenario: string
+          theme: string
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: string | null
+          display_order?: number | null
+          explanation?: string | null
+          id?: string
+          level?: number
+          options?: Json
+          question?: string
+          scenario?: string
+          theme?: string
+        }
+        Relationships: []
+      }
+      simulado_sessions: {
+        Row: {
+          completed_at: string | null
+          correct_answers: number
+          id: string
+          is_completed: boolean
+          level: number
+          started_at: string
+          time_seconds: number | null
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          correct_answers?: number
+          id?: string
+          is_completed?: boolean
+          level: number
+          started_at?: string
+          time_seconds?: number | null
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          correct_answers?: number
+          id?: string
+          is_completed?: boolean
+          level?: number
+          started_at?: string
+          time_seconds?: number | null
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_answers: {
         Row: {
           answered_at: string | null
@@ -284,6 +404,30 @@ export type Database = {
           theme: string
         }[]
       }
+      get_simulado_questions: {
+        Args: { p_level: number }
+        Returns: {
+          difficulty: string
+          display_order: number
+          explanation: string
+          id: string
+          level: number
+          options: Json
+          question: string
+          scenario: string
+          theme: string
+        }[]
+      }
+      get_simulado_ranking: {
+        Args: { p_level: number }
+        Returns: {
+          attempts: number
+          best_score: number
+          best_time: number
+          full_name: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -294,6 +438,14 @@ export type Database = {
       reset_user_stats: { Args: { p_reset_type: string }; Returns: undefined }
       submit_answer: {
         Args: { p_question_id: string; p_selected_option: number }
+        Returns: Json
+      }
+      submit_simulado_answer: {
+        Args: {
+          p_question_id: string
+          p_selected_option: number
+          p_session_id: string
+        }
         Returns: Json
       }
     }

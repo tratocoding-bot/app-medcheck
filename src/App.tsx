@@ -14,6 +14,7 @@ import CronogramaPage from "@/pages/CronogramaPage";
 import PerfilPage from "@/pages/PerfilPage";
 import AdminDatasPage from "@/pages/AdminDatasPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import SimuladoPage from "@/pages/SimuladoPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/pratica/:area" element={<ProtectedRoute><AreaPraticaPage /></ProtectedRoute>} />
             <Route path="/cronograma" element={<ProtectedRoute><CronogramaPage /></ProtectedRoute>} />
             <Route path="/perfil" element={<ProtectedRoute><PerfilPage /></ProtectedRoute>} />
+            <Route path="/simulado" element={<ProtectedRoute><SimuladoPage /></ProtectedRoute>} />
             <Route path="/admin/datas" element={<ProtectedRoute><AdminRoute><AdminDatasPage /></AdminRoute></ProtectedRoute>} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="*" element={<NotFound />} />
