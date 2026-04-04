@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope, HeartPulse, Hospital, Baby, Users, Brain, Activity, Shield, BookOpen } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Target, Calendar, User, Settings, LogOut, Menu, X, Sun, Moon, Stethoscope, HeartPulse, Hospital, Baby, Users, Brain, Activity, Shield, BookOpen, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
@@ -13,6 +13,7 @@ const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/checklist", label: "Checklist", icon: CheckSquare },
   { to: "/cadernos", label: "Meus Cadernos", icon: BookOpen },
+  { to: "/ranking", label: "Ligas e Ranking", icon: Trophy },
   { to: "/cronograma", label: "Cronograma", icon: Calendar },
   { to: "/simulado", label: "Simulado Oficial", icon: Shield, highlight: true },
   { to: "/perfil", label: "Perfil", icon: User },

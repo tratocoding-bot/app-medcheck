@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserStats, useWeakPoints } from "@/hooks/useUserStats";
 import { checklistSections, getAllItems } from "@/data/checklistData";
 import { themeInfo, getScoreLevel, calculateEnamedScore } from "@/data/clinicalQuestions";
-import { Calendar, BookOpen, FileText, MapPin, TrendingUp, Shield, Clock, AlertTriangle, CheckCircle2, ClipboardList, Brain, Target, Flame, Trophy, Zap } from "lucide-react";
+import { Calendar, BookOpen, FileText, MapPin, TrendingUp, Shield, Clock, AlertTriangle, CheckCircle2, ClipboardList, Brain, Target, Flame, Trophy, Zap, Layers, BrainCircuit } from "lucide-react";
 import { useMemo } from "react";
 
 const sectionIcons: Record<string, React.ElementType> = {
@@ -94,6 +94,26 @@ export default function DashboardPage() {
           <p className="text-sm font-medium text-destructive">{performanceAlert}</p>
         </div>
       )}
+
+      {/* Daily Challenge Banner */}
+      <Link to="/desafio" className="block mt-2">
+        <div className="p-4 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg flex items-center justify-between group hover:shadow-xl transition-all">
+          <div className="flex items-center gap-4">
+            <div className="bg-white/20 p-3 rounded-full group-hover:scale-110 transition-transform">
+              <Flame className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                Desafio do Dia <Badge variant="secondary" className="bg-white text-red-600 border-none font-black text-[10px] uppercase">Loot</Badge>
+              </h2>
+              <p className="text-sm opacity-90 font-medium">1 Pergunta. 1 Chance de XP extra. Acaba à meia-noite.</p>
+            </div>
+          </div>
+          <Button variant="secondary" type="button" className="hidden sm:flex bg-white text-red-600 hover:bg-slate-50 border-none pointer-events-none">
+            Resolver Agora
+          </Button>
+        </div>
+      </Link>
 
       {/* Top cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -217,16 +237,26 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Daily task */}
-        <Card className="border-0 shadow-sm">
-          <CardHeader className="pb-2">
+        {/* Spaced Repetition (Anki Model) */}
+        <Card className="border-0 shadow-sm relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none group-hover:scale-110 transition-transform">
+            <BrainCircuit className="w-24 h-24" />
+          </div>
+          <CardHeader className="pb-2 relative z-10">
             <CardTitle className="text-sm flex items-center gap-2">
-              <Zap className="h-4 w-4 text-warning" /> Tarefa do dia
+              <Layers className="h-4 w-4 text-sky-500" /> Revisão Espaçada
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="p-3 rounded-lg bg-warning/5 border border-warning/20">
-              <p className="text-sm">{dailyTask}</p>
+          <CardContent className="relative z-10">
+            <div className="p-3 rounded-lg bg-sky-50 border border-sky-100 dark:bg-sky-900/20 dark:border-sky-800/50">
+              <p className="text-sm text-sky-900 dark:text-sky-300 font-medium mb-3">
+                Sua pilha de Ebbinghaus tem flashcards baseados nos seus erros antigos.
+              </p>
+              <Link to="/revisao">
+                <Button variant="default" size="sm" className="w-full bg-sky-500 hover:bg-sky-600 text-white">
+                  <BrainCircuit className="w-3 h-3 mr-2" /> Revisar Meu Deck
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

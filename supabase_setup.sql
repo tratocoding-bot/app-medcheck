@@ -591,3 +591,59 @@ BEGIN
   LIMIT _limit;
 END;
 $$;
+
+----------------------------------------------------------------------------------
+-- 5. MECÂNICAS DE RETENÇÃO DIÁRIA (Anki, Desafio, Ligas)
+----------------------------------------------------------------------------------
+
+-- Revisão Espaçada Automática (Curva de Ebbinghaus: 3, 7, 15, 30 dias atrás)
+CREATE OR REPLACE FUNCTION public.get_spaced_repetition_questions(
+  _user_id uuid
+)
+RETURNS SETOF public.clinical_questions
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT DISTINCT q.*
+  FROM public.clinical_questions q
+  JOIN public.user_answers ua ON q.id = ua.question_id
+  WHERE ua.user_id = _user_id 
+    AND ua.is_correct = false
+    AND (
+      DATE(ua.created_at) = (CURRENT_DATE - INTERVAL '3 days') OR
+      DATE(ua.created_at) = (CURRENT_DATE - INTERVAL '7 days') OR
+      DATE(ua.created_at) = (CURRENT_DATE - INTERVAL '15 days') OR
+      DATE(ua.created_at) = (CURRENT_DATE - INTERVAL '30 days')
+    );
+END;
+$$;
+
+-- Placar Semanal (Ligas)
+CREATE OR REPLACE FUNCTION public.get_weekly_leaderboard()
+RETURNS TABLE (
+  user_id uuid,
+  full_name text,
+  perfil text,
+  weekly_xp bigint
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    ua.user_id,
+    p.full_name,
+    p.perfil,
+    -- Calcula XP desta semana
+    SUM(CASE WHEN ua.is_correct THEN 15 ELSE 3 END)::bigint as weekly_xp
+  FROM public.user_answers ua
+  JOIN public.profiles p ON p.id = ua.user_id
+  WHERE ua.created_at >= date_trunc('week', now())
+  GROUP BY ua.user_id, p.full_name, p.perfil
+  ORDER BY weekly_xp DESC
+  LIMIT 50;
+END;
+$$;

@@ -16,6 +16,9 @@ import AdminDatasPage from "@/pages/AdminDatasPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import SimuladoPage from "@/pages/SimuladoPage";
 import CadernosPage from "@/pages/CadernosPage";
+import RankingPage from "@/pages/RankingPage";
+import ChallengePage from "@/pages/ChallengePage";
+import ReviewPage from "@/pages/ReviewPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -59,6 +62,9 @@ const App = () => (
             <Route path="/perfil" element={<ProtectedRoute><PerfilPage /></ProtectedRoute>} />
             <Route path="/simulado" element={<ProtectedRoute><SimuladoPage /></ProtectedRoute>} />
             <Route path="/cadernos" element={<ProtectedRoute><CadernosPage /></ProtectedRoute>} />
+            <Route path="/ranking" element={<ProtectedRoute><RankingPage /></ProtectedRoute>} />
+            <Route path="/desafio" element={<ProtectedRoute><ChallengePage /></ProtectedRoute>} />
+            <Route path="/revisao" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
             <Route path="/admin/datas" element={<ProtectedRoute><AdminRoute><AdminDatasPage /></AdminRoute></ProtectedRoute>} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="*" element={<NotFound />} />
