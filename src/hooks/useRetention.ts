@@ -51,19 +51,19 @@ export function useDailyChallenge() {
       // Seleciona o index
       const targetIndex = seed % count;
 
-      // Busca a questão completa no servidor via paginação unitária
-      const { data: question, error: qError } = await supabase
+      // Busca a questão completa no servidor usando paginação com ordem estrita
+      const { data: questions, error: qError } = await supabase
         .from('clinical_questions')
         .select('*')
-        .range(targetIndex, targetIndex)
-        .single();
+        .order('id')
+        .range(targetIndex, targetIndex);
 
       if (qError) {
         console.error('Error fetching daily question:', qError);
         return null;
       }
 
-      return question || null;
+      return (questions && questions.length > 0) ? questions[0] : null;
     },
     enabled: !!user,
     staleTime: Infinity, // Só recarrega no outro dia
