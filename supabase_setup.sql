@@ -647,3 +647,35 @@ BEGIN
   LIMIT 50;
 END;
 $$;
+
+-- Buscador SQL Determinístico para o Desafio do Dia
+CREATE OR REPLACE FUNCTION public.get_daily_challenge()
+RETURNS SETOF public.clinical_questions
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  seed integer;
+  target_index integer;
+  total_questions integer;
+BEGIN
+  -- Cria uma semente baseada na data para sortear sempre a mesma questão no dia
+  seed := (EXTRACT(YEAR FROM CURRENT_DATE)::integer * 10000) 
+        + (EXTRACT(MONTH FROM CURRENT_DATE)::integer * 100) 
+        + EXTRACT(DAY FROM CURRENT_DATE)::integer;
+        
+  SELECT count(*) INTO total_questions FROM public.clinical_questions;
+  
+  IF total_questions = 0 THEN
+    RETURN;
+  END IF;
+
+  target_index := seed % total_questions;
+
+  RETURN QUERY
+  SELECT * FROM public.clinical_questions
+  ORDER BY id
+  LIMIT 1
+  OFFSET target_index;
+END;
+$$;

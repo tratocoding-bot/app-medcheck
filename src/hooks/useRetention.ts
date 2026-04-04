@@ -31,39 +31,15 @@ export function useDailyChallenge() {
   return useQuery({
     queryKey: ['daily_challenge', new Date().toISOString().split('T')[0]],
     queryFn: async () => {
-      // Pega a contagem exata para sorteio seguro sem extrapolar limites
-      const { count, error: countError } = await supabase
-        .from('clinical_questions')
-        .select('*', { count: 'exact', head: true });
-        
-      if (countError || count === null || count === 0) {
-        console.error('Error fetching questions count:', countError);
-        return null;
-      }
-      
-      // Cria uma seed determinística local (YYYY-MM-DD)
-      const todayString = new Date().toISOString().split('T')[0];
-      let seed = 0;
-      for (let i = 0; i < todayString.length; i++) {
-        seed += todayString.charCodeAt(i);
-      }
-      
-      // Seleciona o index
-      const targetIndex = seed % count;
+      // Busca a questão inteira através da nossa RPC segura
+      const { data, error } = await (supabase.rpc as any)('get_daily_challenge');
 
-      // Busca a questão completa no servidor usando paginação com ordem estrita
-      const { data: questions, error: qError } = await supabase
-        .from('clinical_questions')
-        .select('*')
-        .order('id')
-        .range(targetIndex, targetIndex);
-
-      if (qError) {
-        console.error('Error fetching daily question:', qError);
+      if (error) {
+        console.error('Error fetching daily question via RPC:', error);
         return null;
       }
 
-      return (questions && questions.length > 0) ? questions[0] : null;
+      return (data && data.length > 0) ? data[0] : null;
     },
     enabled: !!user,
     staleTime: Infinity, // Só recarrega no outro dia
