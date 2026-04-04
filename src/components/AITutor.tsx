@@ -11,9 +11,10 @@ interface Message {
 interface AITutorProps {
   questionId: string;
   explanation: string;
+  theme: string;
 }
 
-export function AITutor({ questionId, explanation }: AITutorProps) {
+export function AITutor({ questionId, explanation, theme }: AITutorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -44,20 +45,67 @@ export function AITutor({ questionId, explanation }: AITutorProps) {
 
     // MOCK RESPONSE
     setTimeout(() => {
-      let replyContent = "Excelente dúvida clínico-teórica! ";
+      // Motor de analogias contextuais baseado primordialmente no Tema + palavras-chave
+      const generateTailoredAnalogy = (text: string, qTheme: string) => {
+        const lowerText = text.toLowerCase();
+        
+        switch (qTheme) {
+          case 'clinica_medica':
+            if (lowerText.includes('coração') || lowerText.includes('cardí') || lowerText.includes('infarto') || lowerText.includes('pressão')) {
+              return "Pense no sistema cardiovascular como o encanamento de uma casa e o coração sendo a bomba d'água mecânica. Se a pressão nos canos sobe demais (HAS) ou entope (IAM), focar em dar banho na casa não resolve; precisamos arrumar o vazamento antes da bomba pifar.";
+            }
+            if (lowerText.includes('pulm') || lowerText.includes('respirat') || lowerText.includes('oxigênio')) {
+              return "Imagine os pulmões como o carburador de um carro. Se o filtro está encharcado de água ou secreção, o motor engasga por falta de oxigênio. A conduta serve justamente para secar ou abrir as vias do ar.";
+            }
+            if (lowerText.includes('infec') || lowerText.includes('bactér') || lowerText.includes('vírus')) {
+              return "Na infecção, seu sistema imune é como a Tropa de Choque. O invasor (bactéria) está no prédio. Às vezes a resposta inflamatória joga tantas granadas que quebra o prédio junto. O diagnóstico e antibiótico precisos ajudam a prender o invasor sem explodir tudo.";
+            }
+            return "Na Clínica Médica, a correlação fisiopatológica é como um 'efeito dominó'. A doença altera a primeira peça (órgão), que vai derrubando as funções vitais seguintes. A intervenção médica serve como a barreira que para a queda.";
+
+          case 'cirurgia':
+            return "Em cenários cirúrgicos e no trauma, pense como um encanador lutando contra um alagamento: se há um cano estourado inundando a sala com sangue ou fezes, a prioridade máxima é usar um torniquete metafórico (ou real) e fechar o registro principal antes que a casa afunde.";
+
+          case 'pediatria':
+            if (lowerText.includes('aleit') || lowerText.includes('mama') || lowerText.includes('nutri')) return "Nutrição pediátrica precoce é como aplicar a fundação primária num prédio recém desenhado. Qualquer tijolo faltando nos primeiros meses causa rachaduras graves na estrutura a longo prazo.";
+            return "A grande pegadinha da pediatria! Não trate crianças apenas como 'pequenos adultos'. O metabolismo deles é uma Ferrari acelerada: perde água e eletrólitos de forma ultra-rápida. A reposição e condutas devem ser sempre instantâneas pelas vias imaturas.";
+
+          case 'ginecologia':
+            return "O raciocínio da obstetrícia e ginecologia é muitas vezes como transportar uma carga valiosa dupla numa estrada sinuosa. Qualquer desvio brusco de conduta afeta mãe e recém-nascido. As diretrizes visam estabilizar o 'carro' para proteger ambos simultaneamente, sempre considerando a idade gestacional.";
+
+          case 'saude_mental':
+            return "Na saúde mental, os transtornos são semelhantes ao alarme central de segurança de uma casa. Ele dispara ensurdecedoramente (ansiedade, psicose) mesmo quando não há perigo real (estímulo nulo). A classe medicamentosa age para regular a fiação neuroquímica hipersensível que causa os curtos-circuitos.";
+
+          case 'medicina_familia':
+            return "A saúde da família atua como o alicerce de manutenção preventiva. Em vez de consertar o motor depois de fundir, ela acompanha a troca de óleo constante do paciente. A conduta correta aqui reflete longitudinalidade: prevenir agravos custa muito menos pro organismo (e pro Estado).";
+
+          case 'saude_coletiva':
+            return "Olhando pelo retrovisor da Saúde Coletiva: focar no indivíduo aqui é como limpar uma gota num piso chovendo. A Epidemiologia atua fechando a janela por onde a chuva está entrando na população. Os índices norteiam em que janela atuar primeiro.";
+
+          default:
+            return "Trazendo para a vida real: a medicina tenta sempre atacar a causa base do problema. Pense numa goteira; ficar enxugando o chão não adianta até subir no telhado e consertar a telha quebrada pela fisiopatologia descrita.";
+        }
+      };
+
+      const tailoredAnalogy = generateTailoredAnalogy(explanation, theme);
+      
+      let replyContent = "Excelente dúvida! Deixa eu te dar uma analogia focada nessa exata situação clínica para você entender de vez:\n\n";
       
       const lowerInput = userMessage.content.toLowerCase();
-      if (lowerInput.includes('por que') || lowerInput.includes('pq')) {
-        replyContent += "O motivo principal é que a conduta correta deve mitigar o risco iminente de mortalidade do paciente antes de exames confirmatórios complexos. Avaliando a explicação que vimos: " + explanation.substring(0, 50) + "...";
+
+      // Personaliza minimamente baseado no input
+      if (lowerInput.includes('por que') || lowerInput.includes('pq') || lowerInput.includes('motivo') || lowerInput.includes('explic')) {
+        replyContent += tailoredAnalogy + "\n\nCruzando isso com a explicação da resposta: a intervenção que marcamos como certa ataca exatamente o núcleo desse processo.";
       } else if (lowerInput.includes('medicamento') || lowerInput.includes('remédio') || lowerInput.includes('droga')) {
-        replyContent += "A classe medicamentosa escolhida tem impacto direto no desfecho em protocolos SUS. Não usamos a outra alternativa porque aumentaria o risco de efeitos adversos severos neste paciente específico.";
+        replyContent += "Sobre a conduta medicamentosa, " + tailoredAnalogy + "\n\nO medicamento gabaritado é a ferramenta perfeita para frear isso com segurança baseada na Diretriz do Ministério da Saúde.";
+      } else if (lowerInput.includes('diagnóstico') || lowerInput.includes('exame') || lowerInput.includes('teste')) {
+        replyContent += "A dúvida se pedir ou não exames pega muita gente. Pense da seguinte forma:\n" + tailoredAnalogy + "\n\nNeste momento do caso clínico o diagnóstico já está dado, e atrasar a conduta só piora nosso doente.";
       } else {
-        replyContent += "No contexto do ENAMED e ENARE, questões com este padrão cobram o reconhecimento da 'Red Flag'. Sempre que você notar os comemorativos expostos no caso, foque na diretriz brasileira mais recente.";
+        replyContent += tailoredAnalogy + "\n\nAcredito que vendo por esse lado de uma 'situação real', a conduta clínica ou diagnóstico cobrado pela banca faz muito mais sentido!";
       }
 
       setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: 'assistant', content: replyContent }]);
       setIsTyping(false);
-    }, 2000);
+    }, 1500);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -112,7 +160,7 @@ export function AITutor({ questionId, explanation }: AITutorProps) {
             }`}>
               {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-5 h-5" />}
             </div>
-            <div className={`rounded-2xl px-4 py-2.5 max-w-[80%] text-sm shadow-sm ${
+            <div className={`rounded-2xl px-4 py-2.5 max-w-[80%] text-sm shadow-sm whitespace-pre-wrap ${
               msg.role === 'user' 
                 ? 'bg-slate-800 text-white dark:bg-slate-700 rounded-tr-none' 
                 : 'bg-white border border-slate-100 text-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 rounded-tl-none'

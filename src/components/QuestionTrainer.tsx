@@ -331,6 +331,7 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
                     <AITutor 
                       questionId={currentQuestion.id} 
                       explanation={answerResult?.explanation || "Explicação padrão não encontrada."} 
+                      theme={currentQuestion.theme}
                     />
                     <CommunityComments questionId={currentQuestion.id} />
                   </div>
