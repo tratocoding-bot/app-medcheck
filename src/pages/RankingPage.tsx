@@ -75,6 +75,13 @@ export default function RankingPage() {
         </CardContent>
       </Card>
 
+      <div className="bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800/50 rounded-xl p-4 flex items-start gap-3 shadow-sm">
+        <Trophy className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />
+        <p className="text-sm text-sky-800 dark:text-sky-300 leading-relaxed">
+          <strong>Como funciona o pareamento:</strong> Atualmente existem múltiplos grupos simultâneos de competidores ativos. Nosso algoritmo inteligente pode te reposicionar de chaves semanalmente ou diariamente com base na sua performance e consistência. Por isso, não se preocupe se o seu colega estiver aparecendo em um grupo diferente do seu!
+        </p>
+      </div>
+
       <Card className="border-0 shadow-sm overflow-hidden">
         <CardHeader className="bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
             <CardTitle className="text-base flex items-center gap-2">
