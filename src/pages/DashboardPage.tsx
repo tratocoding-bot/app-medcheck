@@ -208,9 +208,9 @@ export default function DashboardPage() {
               ))
             )}
             {weakPoints.length > 0 && (
-              <Link to="/aprovacao">
-                <Button variant="outline" size="sm" className="w-full mt-2">
-                  <Target className="mr-2 h-3 w-3" /> Revisar agora
+              <Link to="/cadernos" state={{ onlyErrors: true }}>
+                <Button variant="outline" size="sm" className="w-full mt-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200 dark:border-rose-900/40 dark:hover:bg-rose-900/20">
+                  <Target className="mr-2 h-3 w-3" /> Gerar Caderno de Erros
                 </Button>
               </Link>
             )}

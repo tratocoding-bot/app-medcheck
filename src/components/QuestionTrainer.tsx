@@ -10,6 +10,8 @@ import { getAllItems } from "@/data/checklistData";
 import { CheckCircle2, XCircle, Trophy, Flame, Brain, Target, ArrowRight, RotateCcw, Lock, Zap, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
+import { AITutor } from "./AITutor";
+import { CommunityComments } from "./CommunityComments";
 
 interface QuestionTrainerProps {
   questions: any[];
@@ -321,6 +323,16 @@ export default function QuestionTrainer({ questions, isLoading, tabLabel }: Ques
                         <p className="text-sm text-muted-foreground">{answerResult.explanation}</p>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {showResult && (
+                  <div className="space-y-2">
+                    <AITutor 
+                      questionId={currentQuestion.id} 
+                      explanation={answerResult?.explanation || "Explicação padrão não encontrada."} 
+                    />
+                    <CommunityComments questionId={currentQuestion.id} />
                   </div>
                 )}
 

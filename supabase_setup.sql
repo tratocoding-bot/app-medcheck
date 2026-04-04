@@ -536,3 +536,58 @@ BEGIN
         END LOOP;
     END LOOP;
 END $$;
+
+----------------------------------------------------------------------------------
+-- 4. FEATURES AVANÇADAS: Comentários e Cadernos
+----------------------------------------------------------------------------------
+
+-- Criar tabela de comentários
+CREATE TABLE public.question_comments (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  question_id uuid REFERENCES clinical_questions(id) ON DELETE CASCADE NOT NULL,
+  content text NOT NULL,
+  likes int DEFAULT 0,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.question_comments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can read comments" ON public.question_comments FOR SELECT USING (true);
+CREATE POLICY "Users can insert their own comments" ON public.question_comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can delete own comments" ON public.question_comments FOR DELETE USING (auth.uid() = user_id);
+CREATE POLICY "Users can update own comments" ON public.question_comments FOR UPDATE USING (auth.uid() = user_id);
+
+-- Criar RPC para Cadernos de Questões (Simulados Personalizados / Caderno de Erros)
+CREATE OR REPLACE FUNCTION public.get_custom_questions(
+  _user_id uuid,
+  _limit int,
+  _themes text[],
+  _difficulty text,
+  _only_errors boolean
+)
+RETURNS SETOF public.clinical_questions
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT q.*
+  FROM public.clinical_questions q
+  WHERE
+    -- Filtro de Tema (se array não estiver vazio/null)
+    ($1 Is Null OR array_length(_themes, 1) IS NULL OR q.theme = ANY(_themes))
+    -- Filtro de Dificuldade
+    AND (_difficulty IS NULL OR _difficulty = 'todas' OR q.difficulty = _difficulty)
+    -- Filtro de Erros
+    AND (
+      _only_errors = false OR 
+      (_only_errors = true AND EXISTS (
+         SELECT 1 FROM public.user_answers err 
+         WHERE err.question_id = q.id AND err.user_id = _user_id AND err.is_correct = false
+       ))
+    )
+  ORDER BY random()
+  LIMIT _limit;
+END;
+$$;
