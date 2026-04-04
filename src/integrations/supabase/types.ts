@@ -404,6 +404,20 @@ export type Database = {
           theme: string
         }[]
       }
+      get_daily_challenge: {
+        Args: never
+        Returns: {
+          created_at: string
+          difficulty: string
+          display_order: number
+          explanation: string
+          id: string
+          options: Json
+          question: string
+          scenario: string
+          theme: string
+        }[]
+      }
       get_simulado_questions: {
         Args: { p_level: number }
         Returns: {
@@ -426,6 +440,20 @@ export type Database = {
           best_time: number
           full_name: string
           user_id: string
+        }[]
+      }
+      get_spaced_repetition_questions: {
+        Args: { _user_id: string }
+        Returns: {
+          created_at: string
+          difficulty: string
+          display_order: number
+          explanation: string
+          id: string
+          options: Json
+          question: string
+          scenario: string
+          theme: string
         }[]
       }
       has_role: {
