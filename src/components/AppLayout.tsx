@@ -12,7 +12,6 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/checklist", label: "Checklist", icon: CheckSquare },
-  { to: "/cadernos", label: "Meus Cadernos", icon: BookOpen },
   { to: "/ranking", label: "Ligas e Ranking", icon: Trophy },
   { to: "/cronograma", label: "Cronograma", icon: Calendar },
   { to: "/simulado", label: "Simulado Oficial", icon: Shield, highlight: true },
