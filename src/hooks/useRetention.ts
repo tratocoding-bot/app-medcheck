@@ -31,27 +31,37 @@ export function useDailyChallenge() {
   return useQuery({
     queryKey: ['daily_challenge', new Date().toISOString().split('T')[0]],
     queryFn: async () => {
-      // Pega IDs para sorteio determinístico sem puxar tudo
-      const { data: allIds, error } = await supabase.from('clinical_questions').select('id');
-      if (error || !allIds || allIds.length === 0) return null;
+      // Pega a contagem exata para sorteio seguro sem extrapolar limites
+      const { count, error: countError } = await supabase
+        .from('clinical_questions')
+        .select('*', { count: 'exact', head: true });
+        
+      if (countError || count === null || count === 0) {
+        console.error('Error fetching questions count:', countError);
+        return null;
+      }
       
-      // Cria uma seed usando a data (YYYY-MM-DD)
+      // Cria uma seed determinística local (YYYY-MM-DD)
       const todayString = new Date().toISOString().split('T')[0];
       let seed = 0;
       for (let i = 0; i < todayString.length; i++) {
         seed += todayString.charCodeAt(i);
       }
       
-      // Seleciona o ID com base na seed
-      const targetIndex = seed % allIds.length;
-      const targetId = allIds[targetIndex].id;
+      // Seleciona o index
+      const targetIndex = seed % count;
 
-      // Busca a questão completa
-      const { data: question } = await supabase
+      // Busca a questão completa no servidor via paginação unitária
+      const { data: question, error: qError } = await supabase
         .from('clinical_questions')
         .select('*')
-        .eq('id', targetId)
+        .range(targetIndex, targetIndex)
         .single();
+
+      if (qError) {
+        console.error('Error fetching daily question:', qError);
+        return null;
+      }
 
       return question || null;
     },
