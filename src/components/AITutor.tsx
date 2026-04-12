@@ -140,7 +140,7 @@ export function AITutor({ questionId, explanation, theme }: AITutorProps) {
           </div>
           <div>
             <h3 className="font-semibold text-sm leading-tight">Tutor de IA Integrado</h3>
-            <span className="text-blue-100 text-[11px] font-medium">ENAMED Check Beta</span>
+            <span className="text-blue-100 text-[11px] font-medium">MedCheck Pro Beta</span>
           </div>
         </div>
         <button 

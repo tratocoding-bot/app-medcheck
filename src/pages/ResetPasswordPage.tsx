@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
         <CardHeader className="text-center pb-2">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Stethoscope className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-primary">ENAMED Check</span>
+            <span className="text-2xl font-bold text-primary">MedCheck Pro</span>
           </div>
           <CardTitle className="text-xl">Redefinir Senha</CardTitle>
           <CardDescription>

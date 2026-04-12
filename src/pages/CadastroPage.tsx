@@ -62,7 +62,7 @@ export default function CadastroPage() {
         <CardHeader className="text-center pb-2">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Stethoscope className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-primary">ENAMED Check</span>
+            <span className="text-2xl font-bold text-primary">MedCheck Pro</span>
           </div>
           <CardTitle className="text-xl">Criar Conta</CardTitle>
           <CardDescription>Cadastre-se para acompanhar seu progresso</CardDescription>
@@ -124,7 +124,7 @@ export default function CadastroPage() {
               <div>
                 <Label className="text-base font-semibold text-primary">Indique seus colegas (Opcional)</Label>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Recomende o ENAMED Check, o app que mais ajuda na aprovação!
+                  Recomende o MedCheck Pro, o app que mais ajuda na aprovação!
                 </p>
               </div>
               

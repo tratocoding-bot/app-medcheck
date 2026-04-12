@@ -68,7 +68,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
           <Link to="/dashboard" className="flex items-center gap-2">
             <Stethoscope className="h-6 w-6 text-primary" />
-            <span className="font-bold text-primary text-lg hidden sm:inline">ENAMED Check</span>
+            <span className="font-bold text-primary text-lg hidden sm:inline">MedCheck Pro</span>
           </Link>
 
           <div className="flex-1 max-w-xs mx-4 hidden sm:block">
