@@ -13,6 +13,7 @@ import AreaPraticaPage from "@/pages/AreaPraticaPage";
 import CronogramaPage from "@/pages/CronogramaPage";
 import PerfilPage from "@/pages/PerfilPage";
 import AdminDatasPage from "@/pages/AdminDatasPage";
+import AdminQuestoesPage from "@/pages/AdminQuestoesPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import SimuladoPage from "@/pages/SimuladoPage";
 import CadernosPage from "@/pages/CadernosPage";
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/desafio" element={<ProtectedRoute><ChallengePage /></ProtectedRoute>} />
             <Route path="/revisao" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>} />
             <Route path="/admin/datas" element={<ProtectedRoute><AdminRoute><AdminDatasPage /></AdminRoute></ProtectedRoute>} />
+            <Route path="/admin/questoes" element={<ProtectedRoute><AdminRoute><AdminQuestoesPage /></AdminRoute></ProtectedRoute>} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
